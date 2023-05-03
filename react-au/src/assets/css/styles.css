@@ -578,3 +578,7 @@ div {
   font-size: 2rem;
 
 }
+.text-left input[type="radio"] {
+  transform: scale(2.5);
+  margin-right: 10px;
+}
