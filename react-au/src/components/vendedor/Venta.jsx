@@ -160,28 +160,26 @@ export const Venta = () => {
     for (let i = 0; i < form.num_boletos; i++) {
       // Create the content of the ticket
       const ticketContent = `
-        <div style="font-family: Arial; font-weight: bold; width: 50mm;">
-          <h3 style="margin: 0; font-size: 3rem;">VENTA</h2>
-          <table style="border-collapse: collapse;collapse; width: 50mm;">
-          <tr style="border: 2px solid black;">
+      <div style="font-family: Arial; font-weight: bold; width: 50mm;">
+      <h3 style="margin: 0; font-size: 3rem; line-height: 1.5;">VENTA</h3>
+      <table style="border-collapse: collapse;collapse; width: 50mm;">
+        <tr style="border: 2px solid black;">
           <td style="border: 2px solid black;">Destino</td>
           <td style="border: 2px solid black;">Descuento</td>
-          </tr>
-          <tr style="border: 2px solid black;">
-          <td style="border: 2px solid black;">${newBoleto.nombre_ruta}
-          </td>
+        </tr>
+        <tr style="border: 2px solid black;">
+          <td style="border: 2px solid black;">${newBoleto.nombre_ruta}</td>
           <td style="border: 2px solid black;">${form.nombre_boleto}</td>
-          </tr>
-          </table>
-          
-        </div>
-        <div style="font-family: Arial; font-size: 1.2rem; ">
-        <h4>Total:<span>$${form.total}</span>
-        </h4>
-        <h4>Vendedor:<span>${form.vendedor}</span></h4>
-        <h4>Taquilla:<span>1</span></h4>
-        <h4><span>${dateTime}</span></h4>
-        </div>
+        </tr>
+      </table>
+    </div>
+    <div style="font-family: Arial; font-size: 1.2rem; line-height: 1.5;">
+      <h4 style="line-height: 0.1;"><span>Total:</span><span>$${form.total}</span></h4>
+      <h4 style="line-height: 0.1;"><span>Vendedor:</span><span>${form.vendedor}</span></h4>
+      <h4 style="line-height: 0.1;"><span>Caja:</span><span>${caja}</span></h4>
+      <h4 style="line-height: 1;"><span>${dateTime}</span></h4>
+    </div>
+    
       `;
 
       // Append the ticket content to the tickets variable
@@ -256,8 +254,8 @@ export const Venta = () => {
         <div className="col-md-6">
           <form className="register-form" onSubmit={saveBoleto}>
             <div className="row d-flex form-group">
-              <div className="form-group col-sm-6 text-white text-center py-3">
-                <label htmlFor="destino_code">1)Destino</label>
+              <div className="form-group  text-white text-center py-3">
+                <label htmlFor="destino_code">1. Destino</label>
                 <input
                   type="number"
                   className="form-control"
@@ -268,8 +266,8 @@ export const Venta = () => {
                   required
                 />
               </div>
-              <div className="form-group col-sm-6 text-white text-center py-3">
-                <label htmlFor="num_boletos">2)Numero de boletos</label>
+              <div className="form-group  text-white text-center py-3">
+                <label htmlFor="num_boletos">2. Numero de boletos</label>
                 <input
                   type="number"
                   className="form-control"
@@ -280,24 +278,24 @@ export const Venta = () => {
                   onChange={changed}
                   required
                 />
-                <div>
+                <div className="col-md-12">
                   <button
                     onClick={suma}
-                    style={{ marginRight: "0px", width: "45%" }}
+                    style={{ marginRight: "0px", width: "49%" }}
                   >
                     +
                   </button>
                   <button
                     onClick={resta}
-                    style={{ marginLeft: "14px", width: "45%" }}
+                    style={{ marginLeft: "14px", width: "49%" }}
                   >
                     -
                   </button>
                 </div>
               </div>
             </div>
-            <div className="col-sm-6 text-white text-center py-3">
-              <label htmlFor="descuento">3)Tipo de descuento</label>
+            <div className=" text-white text-center py-3">
+              <label htmlFor="descuento">3. Tipo de descuento</label>
 
               <div className="text-white">
                 <div className="text-left">
@@ -311,7 +309,10 @@ export const Venta = () => {
                           onChange={changed}
                           required
                         />
-                        {opcion.nombre_boleto} - %{opcion.descuento}
+                        {opcion.nombre_boleto}
+                        {opcion.descuento !== 1
+                          ? ` - %${opcion.descuento}`
+                          : ""}
                       </h1>
                     </div>
                   ))}
@@ -320,7 +321,15 @@ export const Venta = () => {
               </div>
             </div>
             <div className="row form-group">
-              <div className="col-sm-6 text-white text-center py-3">
+              <div className=" text-white text-center py-3">
+                <input
+                  type="submit"
+                  value="Hacer venta"
+                  className="btn btn-success"
+                  style={{ fontSize: "3.6rem" }}
+                />
+              </div>
+              <div className=" text-white text-center py-3">
                 <button
                   className="btn btn-warning"
                   style={{ fontSize: "3.6rem" }}
@@ -329,20 +338,12 @@ export const Venta = () => {
                   Limpiar Venta
                 </button>
               </div>
-              <div className="col-sm-6 text-white text-center py-3">
-                <input
-                  type="submit"
-                  value="Hacer venta"
-                  className="btn btn-success"
-                  style={{ fontSize: "3.6rem" }}
-                />
-              </div>
             </div>
           </form>
           <div className="col-sm-12 text-white text-center py-3">
             <NavLink to="/vendedor/venta-corte">
               <button className="btn btn-info" style={{ fontSize: "3.6rem" }}>
-                corte de caja
+                Corte de caja
               </button>
             </NavLink>
           </div>
