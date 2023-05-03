@@ -64,28 +64,37 @@ export default function CorteCaja() {
   const [totalBoletos, setTotalBoletos] = useState(0);
   const tableRef = useRef(null);
   const token = localStorage.getItem("token");
+  const caja = localStorage.getItem("caja");
   const user = localStorage.getItem("user");
   const parsedUser = JSON.parse(user);
   let vendedor = parsedUser.name;
 
   const handlePrint = () => {
-    const now = new Date().toLocaleString("es-ES", { hour12: false });
+    const now = new Date();
+    const hour = now.getHours();
+    let turno = "";
+    if (hour >= 5 && hour < 14) {
+      turno = "1";
+    } else if (hour >= 14 && hour <= 23) {
+      turno = "2";
+    }
 
     const ticketContent = `
-    <div style="font-family: Arial; font-weight: bold; text-align: center;">
-    <h2 style="color: red; font-size: 24px;">Corte de caja</h2>
-    <p style="font-family: Arial; font-weight: bold; font-size: 17px;">${now}</p>
-  </div>
-  <div style="display: flex;">
-    <p style="font-family: Arial; font-weight: bold; font-size: 17px;">Cajera: ${vendedor}</p>
-    <p style="font-family: Arial; font-weight: bold; font-size: 17px;">_Turno: 1</p>
-  </div>
-  <div style="flex: 1;">
-    <p style="font-family: Arial; font-weight: bold; font-size: 17px;">Monto total del dia: $${totalGanancias}</p>
-    <p style="font-family: Arial; font-weight: bold; font-size: 17px;">Boletos vendidos: ${totalBoletos}</p>
-  </div>
- `;
- 
+      <div style="font-family: Arial; font-weight: bold; text-align: center;">
+      <h2 style="color: red; font-size: 24px;">Corte de caja</h2>
+      <p style="font-family: Arial; font-weight: bold; font-size: 17px;">${now}</p>
+    </div>
+    <div style="display: flex;">
+      <p style="font-family: Arial; font-weight: bold; font-size: 17px;">Cajera: ${vendedor}</p>
+      <p style="font-family: Arial; font-weight: bold; font-size: 17px;">Turno:${turno}</p>
+      <p style="font-family: Arial; font-weight: bold; font-size: 17px;"><span>Caja: </span><span>${caja}</span></p>
+    </div>
+    <div style="flex: 1;">
+      <p style="font-family: Arial; font-weight: bold; font-size: 17px;">Monto total del dia: $${totalGanancias}</p>
+      <p style="font-family: Arial; font-weight: bold; font-size: 17px;">Boletos vendidos: ${totalBoletos}</p>
+    </div>
+  `;
+
     printJS({
       printable: data2,
       properties: [
@@ -184,13 +193,16 @@ export default function CorteCaja() {
   useEffect(() => {
     filterDataByDate();
   }, [data]); // ejecutar la función de filtrado cuando se actualiza el estado de data
-
+  const now2 = new Date().toLocaleString("es-ES", { hour12: false });
   return (
     <div className="card bg-light mb-">
       <div className="card-header">
-        <h1>Lista de Ventas</h1>
-        <h2> Monto total del ganacias del dia: ${totalGanancias}</h2>
-        <h2> Monto total de boletos vendidos del dia: {totalBoletos}</h2>
+        <h1>Corte de caja del  {now2}  de {vendedor} </h1>
+        <h2>
+          Monto total del ganacias del dia:
+          <h2 class="badge text-bg-warning">${totalGanancias}</h2>
+        </h2>
+        <h2> Monto total de boletos vendidos del dia: <h2 class="badge text-bg-warning">{totalBoletos}</h2></h2>
         <button onClick={handlePrint}>Imprimir tabla</button>
       </div>
       <div id="card" className="card-body" ref={tableRef}>
