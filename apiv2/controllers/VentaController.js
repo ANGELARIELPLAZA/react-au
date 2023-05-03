@@ -39,10 +39,32 @@ const corteVentas = async (req, res) => {
       {
         $match: {
           vendedor,
-          created_at: {
-            $gte: new Date(`${today}T00:00:00.000Z`),
-            $lte: new Date(`${today}T23:59:59.999Z`),
-          },
+          $expr: {
+            $and: [
+              {
+                $gte: [
+                  {
+                    $dateFromString: {
+                      dateString: "$created_at",
+                      format: "%Y-%m-%d/%H:%M:%S"
+                    }
+                  },
+                  new Date(`${today}T00:00:00Z`)
+                ]
+              },
+              {
+                $lte: [
+                  {
+                    $dateFromString: {
+                      dateString: "$created_at",
+                      format: "%Y-%m-%d/%H:%M:%S"
+                    }
+                  },
+                  new Date(`${today}T23:59:59Z`)
+                ]
+              }
+            ]
+          }
         },
       },
       {
@@ -64,7 +86,6 @@ const corteVentas = async (req, res) => {
         },
       },
     ]);
-
 
     res.json(ventas);
   } catch (error) {
@@ -126,6 +147,8 @@ const crearVenta = async (req, res, next) => {
         message: "Valición no superada",
       });
     }
+
+    
     // Si la validación es exitosa, crear la venta
     const ventaNueva = new Venta({
       destino_code,
@@ -137,7 +160,7 @@ const crearVenta = async (req, res, next) => {
       total,
       totalventa,
       caja,
-      created_at: new Date(),
+      created_at: moment(new Date()).tz("America/Mexico_City").format("YYYY-MM-DD/HH:mm:ss"),
     });
 
     await ventaNueva.save();

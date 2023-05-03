@@ -39,6 +39,7 @@
     "react-native-printer": "^0.0.2",
     "react-pdf": "^6.2.2",
     "react-router-dom": "^6.10.0",
+    "react-tabs-redux": "^4.0.0",
     "react-thermal-printer": "^0.11.0",
     "recharts": "^2.5.0",
     "thermal-printer": "^1.0.5"
