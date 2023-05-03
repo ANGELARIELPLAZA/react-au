@@ -20,6 +20,7 @@ export const Venta = () => {
   const [ticket, setTicket] = useState(null);
   const [dateTime, setDateTime] = useState("");
   const [contador, setContador] = useState(1);
+  const [enviado, setEnviado] = useState(false);
 
   function suma() {
     setContador(contador + 1);
@@ -108,13 +109,6 @@ export const Venta = () => {
     }
   };
 
-  const handleCloseModal = () => {
-    if (contrasenaCorrecta) {
-      setShowModal(false);
-      setSaved(false);
-    }
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -198,11 +192,12 @@ export const Venta = () => {
 
     // Define a function to print the tickets before each page break
     const printBeforePageBreak = (pageNumber) => {
+
       if (pageNumber > 1) {
         for (let i = 0; i < form.num_boletos; i++) {
           window.print();
           // Wait for 1 second before continuing to print the next ticket
-          setTimeout(() => {}, 1000);
+          setTimeout(() => {}, 10);
         }
       }
       setTimeout(() => {
@@ -220,8 +215,11 @@ export const Venta = () => {
     });
   };
   const handlePrintClick = async () => {
+    setEnviado(true);
     handleClick();
+
     let value = boletosArray.length;
+
     for (let i = 0; i < value; i++) {
       // Remove unwanted fields from the object
       delete boletosArray[i].totalventamodel;
@@ -349,11 +347,7 @@ export const Venta = () => {
           </div>
         </div>
       </div>
-      <Modal
-        show={showModal}
-        onHide={handleCloseModal}
-        className="modal-lg display-6"
-      >
+      <Modal show={showModal} className="modal-lg display-6">
         <Modal.Header closeButton>
           <Modal.Title>Detalles de la venta</Modal.Title>
         </Modal.Header>
@@ -431,6 +425,7 @@ export const Venta = () => {
           <button
             id="imprimirBtn"
             variant="secondary"
+            disabled={enviado}
             onClick={() => handlePrintClick(password)}
           >
             Imprimir
