@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const moment = require("moment-timezone");
 const Schema = mongoose.Schema;
 
 let ventaSchema = new Schema({
@@ -39,9 +40,8 @@ let ventaSchema = new Schema({
     required: true,
   },
   created_at: {
-    type: Date,
-    default: Date.now,
-    required: true,
+    type: String,
+    required: true
   },
 });
 

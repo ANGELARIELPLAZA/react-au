@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ListGroup, Tab } from "react-bootstrap";
-import ViewData from "./ViewData";
-import ViewDataTurno from "./ViewDataTurno";
+import ViewData from "./ViewData/ViewData";
+import ViewDataTurno from "./ViewData/ViewDataTurno";
 
 export const Report = () => {
   const [key, setKey] = useState("first");

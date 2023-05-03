@@ -126,6 +126,8 @@ const crearVenta = async (req, res, next) => {
         message: "Valición no superada",
       });
     }
+
+    
     // Si la validación es exitosa, crear la venta
     const ventaNueva = new Venta({
       destino_code,
@@ -137,7 +139,7 @@ const crearVenta = async (req, res, next) => {
       total,
       totalventa,
       caja,
-      created_at: new Date(),
+      created_at: moment(new Date()).tz("America/Mexico_City").format("YYYY-MM-DD-HH:mm:ss"),
     });
 
     await ventaNueva.save();

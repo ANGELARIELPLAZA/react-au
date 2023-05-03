@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Global } from "../../helpers/Global";
+import { Global } from "../../../helpers/Global";
 import DataTable from "react-data-table-component";
-import { ReportExcel } from "./ReportExcel";
+import { ReportExcel } from "../ReportExcel";
 import { Badge } from "react-bootstrap";
 
-const ViewDataTurno = () => {
+export default function ViewData() {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const token = localStorage.getItem("token");
@@ -55,21 +55,16 @@ const ViewDataTurno = () => {
         const hora = date.toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
-        }); // obtener la hora en formato AM/PM
-        const ampm = date
-          .toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true,
-            timeZoneName: "short",
-          })
-          .slice(-2); // obtener AM o PM
-        return (
-          <div>
-            {hora} {ampm}
-          </div>
-        ); // mostrar la hora y AM/PM
+          hour12: false, // desactivar la presentación de la hora en formato AM/PM
+        }); // obtener la hora en formato de 24 horas
+        return <div>{hora}</div>; // mostrar la hora en formato de 24 horas
       },
+    },
+    {
+      name: <h3>Caja</h3>,
+      selector: (row) => row.caja,
+      sortable: true,
+      cell: (row) => `${row.caja}`,
     },
     {
       name: <h3>Vendedor</h3>,
@@ -91,6 +86,7 @@ const ViewDataTurno = () => {
       ),
     },
   ];
+
   const fetchData = async () => {
     try {
       const response = await fetch(Global.url + "ventas/list", {
@@ -116,7 +112,6 @@ const ViewDataTurno = () => {
       const total = item.total ? item.total.toString() : "";
       const vendedor = item.vendedor ? item.vendedor.toString() : "";
       const created_at = item.created_at ? item.created_at.toString() : "";
-
       return (
         num_boletos.toLowerCase().includes(searchTerm.toLowerCase()) ||
         nombre_ruta.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -132,10 +127,11 @@ const ViewDataTurno = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
   return (
     <>
       <header className="content__header">
-        <h1 className="content__title">Ventas por turno</h1>
+        <h1 className="content__title">Ventas general</h1>
         <ReportExcel filteredData={filteredData} />
       </header>
       <div className="card bg-light mb-">
@@ -160,6 +156,4 @@ const ViewDataTurno = () => {
       </div>
     </>
   );
-};
-
-export default ViewDataTurno;
+}
