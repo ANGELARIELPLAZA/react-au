@@ -32,8 +32,8 @@ export default function CorteCaja() {
       selector: (row) => row.created_at,
       sortable: true,
       cell: (row) => {
-        const [fecha, hora] = row.created_at.split("T"); // dividir la cadena en fecha y hora
-        return <div>{fecha}</div>; // mostrar solo la fecha
+        const [fecha, hora] = row.created_at.split("/"); // dividir la cadena en fecha y hora
+        return <div>{fecha} {hora}</div>; // mostrar solo la fecha
       },
     },
     {

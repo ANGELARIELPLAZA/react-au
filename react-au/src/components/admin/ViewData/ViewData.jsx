@@ -38,26 +38,20 @@ export default function ViewData() {
       cell: (row) => `$${row.total}`,
     },
     {
-      name: <h3>Fecha</h3>,
+      name: <h3>Fecha </h3>,
       selector: (row) => row.created_at,
       sortable: true,
       cell: (row) => {
-        const [fecha, hora] = row.created_at.split("T"); // dividir la cadena en fecha y hora
+        const [fecha, hora] = row.created_at.split("/"); // dividir la cadena en fecha y hora
         return <div>{fecha}</div>; // mostrar solo la fecha
       },
-    },
-    {
-      name: <h3>Hora</h3>,
+    },{
+      name: <h3>hora</h3>,
       selector: (row) => row.created_at,
       sortable: true,
       cell: (row) => {
-        const date = new Date(row.created_at); // crear un objeto Date a partir de la cadena de fecha y hora
-        const hora = date.toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false, // desactivar la presentación de la hora en formato AM/PM
-        }); // obtener la hora en formato de 24 horas
-        return <div>{hora}</div>; // mostrar la hora en formato de 24 horas
+        const [fecha, hora] = row.created_at.split("/"); // dividir la cadena en fecha y hora
+        return <div>{hora}</div>; // mostrar solo la fecha
       },
     },
     {
