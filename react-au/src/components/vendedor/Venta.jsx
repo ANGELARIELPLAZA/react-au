@@ -160,28 +160,26 @@ export const Venta = () => {
     for (let i = 0; i < form.num_boletos; i++) {
       // Create the content of the ticket
       const ticketContent = `
-        <div style="font-family: Arial; font-weight: bold; width: 50mm;">
-          <h3 style="margin: 0; font-size: 3rem;">VENTA</h2>
-          <table style="border-collapse: collapse;collapse; width: 50mm;">
-          <tr style="border: 2px solid black;">
+      <div style="font-family: Arial; font-weight: bold; width: 50mm;">
+      <h3 style="margin: 0; font-size: 3rem; line-height: 1.5;">VENTA</h3>
+      <table style="border-collapse: collapse;collapse; width: 50mm;">
+        <tr style="border: 2px solid black;">
           <td style="border: 2px solid black;">Destino</td>
           <td style="border: 2px solid black;">Descuento</td>
-          </tr>
-          <tr style="border: 2px solid black;">
-          <td style="border: 2px solid black;">${newBoleto.nombre_ruta}
-          </td>
+        </tr>
+        <tr style="border: 2px solid black;">
+          <td style="border: 2px solid black;">${newBoleto.nombre_ruta}</td>
           <td style="border: 2px solid black;">${form.nombre_boleto}</td>
-          </tr>
-          </table>
-          
-        </div>
-        <div style="font-family: Arial; font-size: 1.2rem; ">
-        <h4>Total:<span>$${form.total}</span>
-        </h4>
-        <h4>Vendedor:<span>${form.vendedor}</span></h4>
-        <h4>Taquilla:<span>1</span></h4>
-        <h4><span>${dateTime}</span></h4>
-        </div>
+        </tr>
+      </table>
+    </div>
+    <div style="font-family: Arial; font-size: 1.2rem; line-height: 1.5;">
+      <h4 style="line-height: 0.1;"><span>Total:</span><span>$${form.total}</span></h4>
+      <h4 style="line-height: 0.1;"><span>Vendedor:</span><span>${form.vendedor}</span></h4>
+      <h4 style="line-height: 0.1;"><span>Caja:</span><span>${caja}</span></h4>
+      <h4 style="line-height: 1;"><span>${dateTime}</span></h4>
+    </div>
+    
       `;
 
       // Append the ticket content to the tickets variable
