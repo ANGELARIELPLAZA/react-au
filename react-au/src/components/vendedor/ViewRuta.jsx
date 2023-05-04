@@ -36,8 +36,9 @@ export default function ViewRuta() {
         },
       });
       const data = await response.json();
-      setData(data);
-      setFilteredData(data);
+      const sortedData = data.sort((a, b) => a.code - b.code); // ordenar por la columna code de forma ascendente
+      setData(sortedData);
+      setFilteredData(sortedData);
     } catch (error) {
       console.error(error);
     }
