@@ -13,14 +13,14 @@ const createToken = (usuario) => {
         email: usuario.email,
         role: usuario.role,
         iat: moment().unix(),
-        exp: moment().add(6, "hours").unix()
+        exp: moment().add(6, "days").unix()
     };
 
     // Devolver jwt token codificado
     return jwt.encode(payload, secret);
 }
 
-
+    
 module.exports = {
     secret,
     createToken
