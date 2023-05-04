@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { ListGroup, Tab } from "react-bootstrap";
 import ViewData from "./ViewData/ViewData";
 import ViewDataTurno from "./ViewData/ViewDataTurno";
+import { ViewDataCajera } from "./ViewData/ViewDataCajera";
 
 export const Report = () => {
   const [key, setKey] = useState("first");
@@ -17,6 +18,9 @@ export const Report = () => {
                 Ventas por turno
               </ListGroup.Item>
               <ListGroup.Item eventKey="third">Ventas por caja</ListGroup.Item>
+              <ListGroup.Item eventKey="fourd">
+                Ventas por vendedora
+              </ListGroup.Item>
             </ListGroup>
           </div>
           <div className="col-md-11">
@@ -30,8 +34,11 @@ export const Report = () => {
               <Tab.Pane eventKey="third">
                 <p>Content of Panel 3</p>
               </Tab.Pane>
+              <Tab.Pane eventKey="fourd">
+                <ViewDataCajera />
+              </Tab.Pane>
             </Tab.Content>
-          </div>{" "}
+          </div>
         </div>
       </Tab.Container>
     </>

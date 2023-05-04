@@ -46,25 +46,25 @@ const corteVentas = async (req, res) => {
                   {
                     $dateFromString: {
                       dateString: "$created_at",
-                      format: "%Y-%m-%d/%H:%M:%S"
-                    }
+                      format: "%Y-%m-%d/%H:%M:%S",
+                    },
                   },
-                  new Date(`${today}T00:00:00Z`)
-                ]
+                  new Date(`${today}T00:00:00Z`),
+                ],
               },
               {
                 $lte: [
                   {
                     $dateFromString: {
                       dateString: "$created_at",
-                      format: "%Y-%m-%d/%H:%M:%S"
-                    }
+                      format: "%Y-%m-%d/%H:%M:%S",
+                    },
                   },
-                  new Date(`${today}T23:59:59Z`)
-                ]
-              }
-            ]
-          }
+                  new Date(`${today}T23:59:59Z`),
+                ],
+              },
+            ],
+          },
         },
       },
       {
@@ -76,6 +76,7 @@ const corteVentas = async (req, res) => {
         $group: {
           _id: "$nombre_ruta",
           total_boletos: { $sum: "$num_boletos" },
+          total_venta: { $sum: "$totalventa" }, // Etapa para sumar las ventas
         },
       },
       {
@@ -83,6 +84,8 @@ const corteVentas = async (req, res) => {
           _id: 0,
           nombre_ruta: "$_id",
           total_boletos: "$total_boletos",
+          total_venta: "$total_venta", // Proyectar el total de ventas
+          vendedor: vendedor,
         },
       },
     ]);
@@ -123,7 +126,7 @@ const crearVenta = async (req, res, next) => {
     const token = params.token;
     const vendedor = params.vendedor;
     const nombre_ruta = params.nombre_ruta;
-    const total = params.total;    
+    const total = params.total;
     const caja = params.caja;
     const totalventa = params.totalventa;
     try {
@@ -148,7 +151,6 @@ const crearVenta = async (req, res, next) => {
       });
     }
 
-    
     // Si la validación es exitosa, crear la venta
     const ventaNueva = new Venta({
       destino_code,
@@ -160,7 +162,9 @@ const crearVenta = async (req, res, next) => {
       total,
       totalventa,
       caja,
-      created_at: moment(new Date()).tz("America/Mexico_City").format("YYYY-MM-DD/HH:mm:ss"),
+      created_at: moment(new Date())
+        .tz("America/Mexico_City")
+        .format("YYYY-MM-DD/HH:mm:ss"),
     });
 
     await ventaNueva.save();

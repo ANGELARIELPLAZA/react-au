@@ -18,6 +18,7 @@ import { ViewUser } from "../components/admin/R-user/ViewUser.jsx";
 import { ViewBoleto } from "../components/admin/R-boleto/ViewBoleto.jsx";
 import ViewRuta from "../components/admin/R-ruta/ViewRuta.jsx";
 import CorteCaja from "../components/vendedor/CorteCaja.jsx";
+import { HomeUsuarios } from "../components/admin/HomeUsuarios.jsx";
 export const Routing = () => {
   return (
     <BrowserRouter>
@@ -31,6 +32,7 @@ export const Routing = () => {
             <Route index element={<Home />} />
             <Route path="home" element={<Home />} />
             <Route path="home-ruta" element={<HomeRutas />} />
+            <Route path="home-usuarios" element={<HomeUsuarios />} />
             <Route path="registrar-usuario" element={<RegisterUsuario />} />
             <Route path="view-usuario" element={<ViewUser />} />
             <Route path="registrar-ruta" element={<RegisterRuta />} />
@@ -47,7 +49,7 @@ export const Routing = () => {
             <Route path="venta" element={<Venta />} />
             <Route path="logout" element={<Logout />} />
             <Route path="venta-corte" element={<CorteCaja />} />
-          </Route>            
+          </Route>
           <Route path="*" element={<Error404 />} />
         </Routes>
       </AuthProvider>

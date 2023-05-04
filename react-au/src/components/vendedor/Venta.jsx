@@ -285,7 +285,7 @@ export const Venta = () => {
                   </button>
                   <button
                     onClick={resta}
-                    style={{ marginLeft: "14px", width: "49%" }}
+                    style={{ marginLeft: "14px", width: "48%" }}
                   >
                     -
                   </button>

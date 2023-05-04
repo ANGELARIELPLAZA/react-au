@@ -33,7 +33,11 @@ export default function CorteCaja() {
       sortable: true,
       cell: (row) => {
         const [fecha, hora] = row.created_at.split("/"); // dividir la cadena en fecha y hora
-        return <div>{fecha} {hora}</div>; // mostrar solo la fecha
+        return (
+          <div>
+            {fecha} {hora}
+          </div>
+        ); // mostrar solo la fecha
       },
     },
     {
@@ -65,15 +69,34 @@ export default function CorteCaja() {
       turno = "2";
     }
 
+    const opcionesFecha = {
+      weekday: "long", // Día de la semana completo (por ejemplo: "jueves")
+      year: "numeric", // Año con cuatro dígitos (por ejemplo: "2023")
+      month: "long", // Nombre completo del mes (por ejemplo: "mayo")
+      day: "numeric", // Día del mes (por ejemplo: "4")
+      timeZoneName: "short", // Nombre corto de la zona horaria (por ejemplo: "CST")
+    };
+
+    const opcionesHora = {
+      hour: "numeric", // Hora en formato de 24 horas (por ejemplo: "9")
+      minute: "numeric", // Minutos (por ejemplo: "30")
+    };
+
+    const fechaEnEspañol = now.toLocaleString("es-ES", {
+      ...opcionesFecha,
+      ...opcionesHora,
+      hour12: false, // Utilizar formato de 24 horas
+    });
+
     const ticketContent = `
       <div style="font-family: Arial; font-weight: bold; text-align: center;">
       <h2 style="color: red; font-size: 24px;">Corte de caja</h2>
-      <p style="font-family: Arial; font-weight: bold; font-size: 17px;">${now}</p>
+      <p style="font-family: Arial; font-weight: bold; font-size: 17px;">${fechaEnEspañol}</p>
     </div>
     <div style="display: flex;">
       <p style="font-family: Arial; font-weight: bold; font-size: 17px;">Cajera: ${vendedor}</p>
-      <p style="font-family: Arial; font-weight: bold; font-size: 17px;">Turno:${turno}</p>
-      <p style="font-family: Arial; font-weight: bold; font-size: 17px;"><span>Caja: </span><span>${caja}</span></p>
+      <p style="font-family: Arial; font-weight: bold; font-size: 17px;">Turno: ${turno}</p>
+      <p style="font-family: Arial; font-weight: bold; font-size: 17px;">Caja: ${caja}</p>
     </div>
     <div style="flex: 1;">
       <p style="font-family: Arial; font-weight: bold; font-size: 17px;">Monto total del dia: $${totalGanancias}</p>
@@ -183,12 +206,18 @@ export default function CorteCaja() {
   return (
     <div className="card bg-light mb-">
       <div className="card-header">
-        <h1>Corte de caja del  {now2}  de {vendedor} </h1>
+        <h1>
+          Corte de caja del {now2} de {vendedor}{" "}
+        </h1>
         <h2>
           Monto total del ganacias del dia:
           <h2 class="badge text-bg-warning">${totalGanancias}</h2>
         </h2>
-        <h2> Monto total de boletos vendidos del dia: <h2 class="badge text-bg-warning">{totalBoletos}</h2></h2>
+        <h2>
+          {" "}
+          Monto total de boletos vendidos del dia:{" "}
+          <h2 class="badge text-bg-warning">{totalBoletos}</h2>
+        </h2>
         <button onClick={handlePrint}>Imprimir tabla</button>
       </div>
       <div id="card" className="card-body" ref={tableRef}>

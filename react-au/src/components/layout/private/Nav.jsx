@@ -42,8 +42,8 @@ export const Nav = () => {
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/admin/">
-                  <h3>Boletos dashboard</h3>
+                <NavLink to="/admin/home-usuarios">
+                  <h3>Usuarios dashboard</h3>
                 </NavLink>
               </li>
             </ul>
