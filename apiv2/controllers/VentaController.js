@@ -34,7 +34,19 @@ const obtenerVenta = async (req, res) => {
 const corteVentas = async (req, res) => {
   try {
     const { vendedor } = req.params;
-    const today = new Date().toISOString().slice(0, 10);
+    const options = {
+      timeZone: "America/Mexico_City",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    };
+    const now = new Date();
+    const diffHours = now.getTimezoneOffset() / 60;
+    now.setHours(now.getHours() - diffHours - 1); // Ajustar la fecha actual según la diferencia horaria
+    const today = now
+      .toLocaleString("es-MX", options)
+      .replace(/(\d+)\/(\d+)\/(\d+)/, "$3-$2-$1");
+
     const ventas = await Venta.aggregate([
       {
         $match: {

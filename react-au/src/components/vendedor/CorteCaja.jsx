@@ -168,7 +168,15 @@ export default function CorteCaja() {
     setFilteredData(filteredResults);
   };
   const filterDataByDate = () => {
-    const currentDate = new Date().toISOString().slice(0, 10); // obtener la fecha actual en formato ISO
+    const options = {
+      timeZone: "America/Mexico_City",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    };
+    const currentDate = new Date()
+      .toLocaleString("en-US", options)
+      .replace(/(\d+)\/(\d+)\/(\d+)/, "$3-$1-$2");
     const filteredResults = data.filter((item) =>
       item.created_at.startsWith(currentDate)
     ); // filtrar por fecha actual
@@ -210,7 +218,7 @@ export default function CorteCaja() {
           Corte de caja del {now2} de {vendedor}{" "}
         </h1>
         <h2>
-          Monto total del ganacias del dia:
+          Monto total de ganacias del dia:
           <h2 class="badge text-bg-warning">${totalGanancias}</h2>
         </h2>
         <h2>

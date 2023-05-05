@@ -9,18 +9,20 @@ export const GraphicVentaTime = () => {
   const [ventas, setVentas] = useState([]);
 
   const ventaTotalMes = ventas.reduce((total, venta) => {
-    const fechaVenta = moment(venta.created_at);
-    const fechaActual = moment();
-    if (fechaVenta.month() === fechaActual.month()) {
+    const fechaVenta = venta.created_at.slice(0, 7); // obtener mes y año de la fecha de venta
+    const fechaActual = new Date().toISOString().slice(0, 7); // obtener mes y año de la fecha actual
+    if (fechaVenta === fechaActual) {
       return total + venta.totalventa;
     }
     return total;
   }, 0);
+  
 
   const ventaTotalDia = ventas
+                                                                                                                                                            
     .filter((venta) => {
       const fechaVenta = moment(venta.created_at);
-      const fechaActual = moment();
+      const fechaActual = new Date().toISOString().slice(0, 7); // obtener mes y año de la fecha actual
       return fechaVenta.isSame(fechaActual, "day");
     })
     .reduce((total, venta) => total + venta.totalventa, 0);

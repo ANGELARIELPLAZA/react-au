@@ -154,6 +154,17 @@ export const ViewDataCajera = () => {
             ))}
           </select>
           <button onClick={handleSearch}>Buscar</button>
+          <div className="card-header">
+        <h2>
+          Monto total de ganacias del dia:
+          <h2 class="badge text-bg-warning">$0</h2>
+        </h2>
+        <h2>
+          {" "}
+          Monto total de boletos vendidos del dia:
+          <h2 class="badge text-bg-warning">0</h2>
+        </h2>
+      </div>
           <DataTable
             columns={columns}
             data={filteredData}
