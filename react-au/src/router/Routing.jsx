@@ -4,7 +4,6 @@ import { PublicLayout } from "../components/layout/public/PublicLayout.jsx";
 import { PrivateLayout } from "../components/layout/private/PrivateLayout.jsx";
 import { UserLayout } from "../components/layout/user/UserLayout.jsx";
 import { Login } from "../components/Login.jsx";
-import { HomeRutas } from "../components/admin/HomeRutas.jsx";
 import { RegisterUsuario } from "../components/admin/R-user/RegisterUsuario.jsx";
 import { RegisterRuta } from "../components/admin/R-ruta/RegisterRuta.jsx";
 import { Venta } from "../components/vendedor/Venta.jsx";
@@ -29,7 +28,6 @@ export const Routing = () => {
           </Route>
           <Route path="/admin/*" element={<PrivateLayout />}>
             <Route index element={<HomeUsuarios />} />
-            <Route path="home-ruta" element={<HomeRutas />} />
             <Route path="home-usuarios" element={<HomeUsuarios />} />
             <Route path="registrar-usuario" element={<RegisterUsuario />} />
             <Route path="view-usuario" element={<ViewUser />} />
