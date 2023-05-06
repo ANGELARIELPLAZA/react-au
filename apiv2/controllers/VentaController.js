@@ -174,9 +174,7 @@ const crearVenta = async (req, res, next) => {
       total,
       totalventa,
       caja,
-      created_at: moment(new Date())
-        .tz("America/Mexico_City")
-        .format("YYYY-MM-DD/HH:mm:ss"),
+      created_at: new Date(new Date().getTime() - 60 * 60 * 1000).toLocaleString('es-MX', { timeZone: 'America/Mexico_City', hour12: false }).slice(0, 16),
     });
 
     await ventaNueva.save();

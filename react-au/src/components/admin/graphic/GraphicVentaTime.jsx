@@ -17,34 +17,15 @@ export const GraphicVentaTime = () => {
   }, 0);
 
   const ventaTotalDia = ventas
-
     .filter((venta) => {
       const fechaVenta = moment(venta.created_at);
-      const fechaActual = new Date().toISOString().slice(0, 7); // obtener mes y año de la fecha actual
+      console.log(fechaVenta)
+      const fechaActual = new Date().toLocaleString('es-MX', { timeZone: 'America/Mexico_City' }).slice(0, 10);
+      console.log(fechaActual)
+
       return fechaVenta.isSame(fechaActual, "day");
     })
     .reduce((total, venta) => total + venta.totalventa, 0);
-
-  const ventaPorRuta = ventas.reduce((rutaVentas, venta) => {
-    const ruta = venta.nombre_ruta;
-    const total = venta.totalventa;
-    if (!rutaVentas[ruta]) {
-      rutaVentas[ruta] = total;
-    } else {
-      rutaVentas[ruta] += total;
-    }
-    return rutaVentas;
-  }, {});
-
-  const rutaMaxVentas = Object.entries(ventaPorRuta).reduce(
-    (max, [ruta, ventas]) => {
-      if (ventas > max.ventas) {
-        return { ruta, ventas };
-      }
-      return max;
-    },
-    { ruta: "", ventas: 0 }
-  ).ruta;
 
   const fetchData = async () => {
     try {
@@ -56,6 +37,7 @@ export const GraphicVentaTime = () => {
         },
       });
       const data = await response.json();
+      console.log(data)
       setVentas(data);
     } catch (error) {
       console.error(error);
