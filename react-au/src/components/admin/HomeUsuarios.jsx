@@ -14,7 +14,7 @@ export const HomeUsuarios = () => {
     <Tabs
       defaultActiveKey="homeventas"
       id="uncontrolled-tab-example"
-      className="mb-3"
+      className="mb-3 tab"
     >
       <Tab eventKey="homeventas" title="Home">
         <div>
@@ -101,7 +101,9 @@ export const HomeUsuarios = () => {
           </section>
         </div>
       </Tab>
-      <Tab eventKey="homeusuarios" title="Usuarios"><Ventas/></Tab>
+      <Tab eventKey="homeusuarios" title="Usuarios">
+        <Ventas />
+      </Tab>
     </Tabs>
   );
 };

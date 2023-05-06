@@ -192,7 +192,6 @@ export const Venta = () => {
 
     // Define a function to print the tickets before each page break
     const printBeforePageBreak = (pageNumber) => {
-
       if (pageNumber > 1) {
         for (let i = 0; i < form.num_boletos; i++) {
           window.print();
@@ -225,7 +224,6 @@ export const Venta = () => {
       delete boletosArray[i].totalventamodel;
       delete boletosArray[i].num_boletos_model;
       boletosArray[i].caja = caja;
-
       // Realizar petición de creación de venta
       try {
         const request = await fetch(Global.url + "ventas/creat", {
