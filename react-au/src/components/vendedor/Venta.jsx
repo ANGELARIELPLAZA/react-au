@@ -256,7 +256,7 @@ export const Venta = () => {
                   type="number"
                   className="form-control"
                   name="destino_code" // add the name attribute
-                  placeholder="Ingrese el destino"
+                  placeholder="Ingrese el codigo de destino"
                   style={{ fontSize: "2rem" }}
                   onChange={changed}
                   required
@@ -317,15 +317,16 @@ export const Venta = () => {
               </div>
             </div>
             <div className="row form-group">
-              <div className=" text-white text-center py-3">
+              <div
+                className=" text-white text-center py-3"
+                style={{ width: "95%" }}
+              >
                 <input
                   type="submit"
                   value="Hacer venta"
                   className="btn btn-success"
                   style={{ fontSize: "3.6rem" }}
                 />
-              </div>
-              <div className=" text-white text-center py-3">
                 <button
                   className="btn btn-warning"
                   style={{ fontSize: "3.6rem" }}
@@ -333,16 +334,17 @@ export const Venta = () => {
                 >
                   Limpiar Venta
                 </button>
+                <NavLink to="/vendedor/venta-corte">
+                  <button
+                    className="btn btn-info"
+                    style={{ fontSize: "3.6rem" }}
+                  >
+                    Corte de caja
+                  </button>
+                </NavLink>
               </div>
             </div>
           </form>
-          <div className="col-sm-12 text-white text-center py-3">
-            <NavLink to="/vendedor/venta-corte">
-              <button className="btn btn-info" style={{ fontSize: "3.6rem" }}>
-                Corte de caja
-              </button>
-            </NavLink>
-          </div>
         </div>
       </div>
       <Modal show={showModal} className="modal-lg display-6">

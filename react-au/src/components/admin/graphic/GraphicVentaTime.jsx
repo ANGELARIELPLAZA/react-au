@@ -2,7 +2,6 @@ import { FaMoneyBillAlt, FaRoute } from "react-icons/fa";
 import { Global } from "../../../helpers/Global";
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import { MyDate } from "../MyDate";
 export const GraphicVentaTime = () => {
   const token = localStorage.getItem("token");
 
@@ -16,10 +15,9 @@ export const GraphicVentaTime = () => {
     }
     return total;
   }, 0);
-  
 
   const ventaTotalDia = ventas
-                                                                                                                                                            
+
     .filter((venta) => {
       const fechaVenta = moment(venta.created_at);
       const fechaActual = new Date().toISOString().slice(0, 7); // obtener mes y año de la fecha actual
@@ -71,15 +69,15 @@ export const GraphicVentaTime = () => {
     <div>
       <div className="container">
         <div className="row">
-          <div className="col-md-6">
+          <div className="col-md-12">
             <div className="stats-container row">
               <div className="stat col-12">
                 <div className="stat-icon">
                   <FaMoneyBillAlt />
                 </div>
                 <div className="stat-info">
+                  <div className="stat-label">Ganancias total</div>
                   <div className="stat-value">${ventaTotalMes}</div>
-                  <div className="stat-label">Ventas totales del mes</div>
                 </div>
               </div>
               <div className="stat col-12">
@@ -87,26 +85,28 @@ export const GraphicVentaTime = () => {
                   <FaMoneyBillAlt />
                 </div>
                 <div className="stat-info">
+                  <div className="stat-label">Ganancias del dia</div>
                   <div className="stat-value">${ventaTotalDia}</div>
-                  <div className="stat-label">Ventas totales del día</div>
                 </div>
               </div>
               <div className="stat col-12">
                 <div className="stat-icon">
-                  <FaRoute />
+                  <FaMoneyBillAlt />
                 </div>
                 <div className="stat-info">
-                  <div className="stat-value">{rutaMaxVentas}</div>
-                  <div className="stat-label">
-                    Ruta con mayor ventas en el mes
-                  </div>
+                  <div className="stat-label">Turno 1:</div>
+                  <div className="stat-value">${ventaTotalDia}</div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div className="stats-container row">
-                <MyDate />
+              <div className="stat col-12">
+                <div className="stat-icon">
+                  <FaMoneyBillAlt />
+                </div>
+                <div className="stat-info">
+                  <div className="stat-label">Turno 2:</div>
+                  <div className="stat-value">${ventaTotalDia}</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
