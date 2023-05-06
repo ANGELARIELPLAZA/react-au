@@ -41,18 +41,7 @@ export default function ViewData() {
       name: <h3>Fecha </h3>,
       selector: (row) => row.created_at,
       sortable: true,
-      cell: (row) => {
-        const [fecha, hora] = row.created_at.split("/"); // dividir la cadena en fecha y hora
-        return <div>{fecha}</div>; // mostrar solo la fecha
-      },
-    },{
-      name: <h3>hora</h3>,
-      selector: (row) => row.created_at,
-      sortable: true,
-      cell: (row) => {
-        const [fecha, hora] = row.created_at.split("/"); // dividir la cadena en fecha y hora
-        return <div>{hora}</div>; // mostrar solo la fecha
-      },
+      cell: (row) => `${row.created_at}`,
     },
     {
       name: <h3>Caja</h3>,

@@ -92,7 +92,7 @@ export default function CorteCaja() {
       <p style="font-family: Arial; font-weight: bold; font-size: 17px;">Caja: ${caja}</p>
     </div>
     <div style="flex: 1;">
-      <p style="font-family: Arial; font-weight: bold; font-size: 17px;">Monto total del dia: $${totalGanancias}</p>
+      <p style="font-family: Arial; font-weight: bold; font-size: 17px;">Monto total: $${totalGanancias}</p>
       <p style="font-family: Arial; font-weight: bold; font-size: 17px;">Boletos vendidos: ${totalBoletos}</p>
     </div>
   `;
@@ -206,15 +206,14 @@ export default function CorteCaja() {
     <div className="card bg-light mb-">
       <div className="card-header">
         <h1>
-          Corte de caja del {now2} de {vendedor}{" "}
+          Corte de caja del {now2} de {vendedor}
         </h1>
         <h2>
-          Monto total de ganacias del dia:
+          Monto total:
           <h2 class="badge text-bg-warning">${totalGanancias}</h2>
         </h2>
         <h2>
-          {" "}
-          Monto total de boletos vendidos del dia:{" "}
+          Total de boletos:
           <h2 class="badge text-bg-warning">{totalBoletos}</h2>
         </h2>
         <button onClick={handlePrint}>Imprimir tabla</button>

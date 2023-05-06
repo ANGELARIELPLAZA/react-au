@@ -40,19 +40,7 @@ export const ViewDataTurno1 = () => {
       name: <h3>Fecha </h3>,
       selector: (row) => row.created_at,
       sortable: true,
-      cell: (row) => {
-        const [fecha, hora] = row.created_at.split("/"); // dividir la cadena en fecha y hora
-        return <div>{fecha}</div>; // mostrar solo la fecha
-      },
-    },
-    {
-      name: <h3>hora</h3>,
-      selector: (row) => row.created_at,
-      sortable: true,
-      cell: (row) => {
-        const [fecha, hora] = row.created_at.split("/"); // dividir la cadena en fecha y hora
-        return <div>{hora}</div>; // mostrar solo la fecha
-      },
+      cell: (row) => `${row.created_at}`,
     },
     {
       name: <h3>Caja</h3>,
@@ -82,7 +70,7 @@ export const ViewDataTurno1 = () => {
   ];
   const fetchData = async () => {
     try {
-      const response = await fetch(Global.url + "ventas/list", {
+      const response = await fetch(Global.url + "ventas/corte/general", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -90,18 +78,8 @@ export const ViewDataTurno1 = () => {
         },
       });
       const data = await response.json();
-      const now = new Date();
-      const today = now.toISOString().slice(0, 10); // obtiene la fecha actual en formato YYYY-MM-DD
-      const turno1Start = new Date(`${today}T05:00:00`);
-      const turno1End = new Date(`${today}T13:59:00`);
-
-      const filteredData = data.filter((item) => {
-        const createdDate = new Date(item.created_at.replace("/", "T"));
-        return createdDate >= turno1Start && createdDate <= turno1End;
-      });
-
-      setData(filteredData);
-      setFilteredData(filteredData);
+      setData(data);
+      setFilteredData(data);
     } catch (error) {
       console.error(error);
     }
