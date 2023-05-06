@@ -73,8 +73,6 @@ const corteVentas = async (req, res) => {
       }
     );
     const today = now.replace(/(\d+)\/(\d+)\/(\d+)\s.*/, "$1/$2/$3");
-    console.log(today);
-
     const ventas = await Venta.aggregate([
       {
         $match: {
