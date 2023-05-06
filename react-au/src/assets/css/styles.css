@@ -605,3 +605,6 @@ td {
 tr:hover {
   background-color: #7f23e2;
 }
+.tab .active {
+  background-color : #7f23e2 !important;
+}

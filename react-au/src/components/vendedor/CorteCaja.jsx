@@ -31,14 +31,7 @@ export default function CorteCaja() {
       name: <h3>Fecha y hora</h3>,
       selector: (row) => row.created_at,
       sortable: true,
-      cell: (row) => {
-        const [fecha, hora] = row.created_at.split("/"); // dividir la cadena en fecha y hora
-        return (
-          <div>
-            {fecha} {hora}
-          </div>
-        ); // mostrar solo la fecha
-      },
+      cell: (row) => `${row.created_at}`,
     },
     {
       name: <h3>Vendedor</h3>,
@@ -99,7 +92,7 @@ export default function CorteCaja() {
       <p style="font-family: Arial; font-weight: bold; font-size: 17px;">Caja: ${caja}</p>
     </div>
     <div style="flex: 1;">
-      <p style="font-family: Arial; font-weight: bold; font-size: 17px;">Monto total del dia: $${totalGanancias}</p>
+      <p style="font-family: Arial; font-weight: bold; font-size: 17px;">Monto total: $${totalGanancias}</p>
       <p style="font-family: Arial; font-weight: bold; font-size: 17px;">Boletos vendidos: ${totalBoletos}</p>
     </div>
   `;
@@ -125,7 +118,6 @@ export default function CorteCaja() {
         },
       });
       const data = await response.json();
-
       setData(data);
       setFilteredData(data);
     } catch (error) {
@@ -168,7 +160,14 @@ export default function CorteCaja() {
     setFilteredData(filteredResults);
   };
   const filterDataByDate = () => {
-    const currentDate = new Date().toISOString().slice(0, 10); // obtener la fecha actual en formato ISO
+    const now = new Date(new Date().getTime());
+    const currentDate = now
+      .toLocaleString("es-MX", {
+        timeZone: "America/Mexico_City",
+        hour12: false,
+      })
+      .replace(/(\d+)\/(\d+)\/(\d+).*/, "$1/$2/$3");
+
     const filteredResults = data.filter((item) =>
       item.created_at.startsWith(currentDate)
     ); // filtrar por fecha actual
@@ -207,15 +206,14 @@ export default function CorteCaja() {
     <div className="card bg-light mb-">
       <div className="card-header">
         <h1>
-          Corte de caja del {now2} de {vendedor}{" "}
+          Corte de caja del {now2} de {vendedor}
         </h1>
         <h2>
-          Monto total del ganacias del dia:
+          Monto total:
           <h2 class="badge text-bg-warning">${totalGanancias}</h2>
         </h2>
         <h2>
-          {" "}
-          Monto total de boletos vendidos del dia:{" "}
+          Total de boletos:
           <h2 class="badge text-bg-warning">{totalBoletos}</h2>
         </h2>
         <button onClick={handlePrint}>Imprimir tabla</button>

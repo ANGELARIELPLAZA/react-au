@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import avatar from "../../../assets/img/user.png";
 import useAuth from "../../../hooks/useAuth";
 import { NavLink } from "react-router-dom";
 export const Nav = () => {
@@ -20,35 +19,6 @@ export const Nav = () => {
   return (
     <nav className="navbar__container-lists">
       <ul className="container-lists__menu-list">
-          <li
-          className={`menu-list__item dropdown ${showRoutes ? "active" : ""}`}
-        >
-          <a href="#" className="menu-list__link" onClick={handleShowRoutes}>
-            <i className="fa-solid fa-house" />
-            <span className="menu-list__title">Home</span>
-            <i className="fa-solid fa-chevron-down"></i>
-          </a>
-
-          {showRoutes && (
-            <ul className="container-lists__routes-list">
-              <li>
-                <NavLink to="/admin/">
-                  <h3>Ventas dashboard</h3>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/admin/home-ruta">
-                  <h3>Rutas dashboard</h3>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/admin/home-usuarios">
-                  <h3>Usuarios dashboard</h3>
-                </NavLink>
-              </li>
-            </ul>
-          )}
-        </li>
         <li
           className={`menu-list__item dropdown ${showRoutes ? "active" : ""}`}
         >

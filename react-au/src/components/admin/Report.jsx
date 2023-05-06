@@ -17,8 +17,7 @@ export const Report = () => {
               <ListGroup.Item eventKey="second">
                 Ventas por turno
               </ListGroup.Item>
-              <ListGroup.Item eventKey="third">Ventas por caja</ListGroup.Item>
-              <ListGroup.Item eventKey="fourd">
+              <ListGroup.Item eventKey="third">
                 Ventas por vendedora
               </ListGroup.Item>
             </ListGroup>
@@ -32,9 +31,6 @@ export const Report = () => {
                 <ViewDataTurno />
               </Tab.Pane>
               <Tab.Pane eventKey="third">
-                <p>Content of Panel 3</p>
-              </Tab.Pane>
-              <Tab.Pane eventKey="fourd">
                 <ViewDataCajera />
               </Tab.Pane>
             </Tab.Content>

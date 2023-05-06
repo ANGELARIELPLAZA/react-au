@@ -1,81 +1,65 @@
-import React, { useState, useEffect } from "react";
-import { Global } from "../../../helpers/Global";
+import React from "react";
 
-export const DataUsuarios = (prop) => {
-  const [ventas, setVentas] = useState([]);
-  const [vendedor, setVendedor] = useState("");
+export const DataUsuarios = ({ data }) => {
+  // Objeto para almacenar la suma de ventas por fecha
+  const ventasPorFecha = {};
 
-  const token = localStorage.getItem("token");
+  // Recorrer el array de datos y sumar las ventas por fecha
+  data.forEach((venta) => {
+    const fecha = venta.created_at.split('T')[0];
+    const vendedor = venta.vendedor;
+    const ruta = venta.nombre_ruta;
+    const totalVentas = venta.totalventa;
+    const totalBoletos = parseInt(venta.num_boletos);
 
-  const fetchData = async () => {
-    try {
-      const response = await fetch(Global.url + "ventas/corte/ariel", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-      });
-      const data = await response.json();
-      console.log(data);
-      setVentas(data);
-    } catch (error) {
-      console.error(error);
+    if (ventasPorFecha.hasOwnProperty(fecha)) {
+      ventasPorFecha[fecha].totalVentas += totalVentas;
+      ventasPorFecha[fecha].totalBoletos += totalBoletos;
+      ventasPorFecha[fecha].vendedores.add(vendedor);
+      ventasPorFecha[fecha].rutas.add(ruta);
+    } else {
+      ventasPorFecha[fecha] = {
+        totalVentas,
+        totalBoletos,
+        vendedores: new Set([vendedor]),
+        rutas: new Set([ruta])
+      };
     }
-  };
+  });
 
-  const handleChange = (e) => {
-    setVendedor(e.target.value);
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  // Obtener los nombres de vendedores disponibles
-  const vendedoresDisponibles = [
-    ...new Set(ventas.map((venta) => venta.vendedor)),
-  ];
-
+  // Convertir el objeto de sumas de ventas por fecha en un array de objetos
+  const ventasPorFechaArray = Object.keys(ventasPorFecha).map((fecha) => ({
+    fecha,
+    totalVentas: ventasPorFecha[fecha].totalVentas,
+    totalBoletos: ventasPorFecha[fecha].totalBoletos,
+    vendedores: Array.from(ventasPorFecha[fecha].vendedores).join(", "),
+    rutas: Array.from(ventasPorFecha[fecha].rutas).join(", "),
+  }));
+  
+  ventasPorFechaArray.sort((a, b) => (a.fecha < b.fecha ? 1 : -1));
+   
   return (
-    <div className="content__title">
-      <header className="content__header">
-        <h1 className="content__title">Dashboard Usuarios</h1>
-      </header>
-      <div className="select-container">
-        <label htmlFor="vendedor">Vendedor:</label>
-        <select
-          name="vendedor"
-          id="vendedor"
-          onChange={handleChange}
-          value={vendedor}
-        >
-          <option value="">Todos los vendedores</option>
-          {vendedoresDisponibles.map((vendedor) => (
-            <option key={vendedor} value={vendedor}>
-              {vendedor}
-            </option>
-          ))}
-        </select>
-      </div>
-      <table className="ventas-list">
+    <div className="text-white">
+      <table>
         <thead>
           <tr>
-            <th>Cantidad</th>
+            <th>Boletos</th>
+            <th>Vendedor</th>
             <th>Ruta</th>
-            <th>Total venta</th>
+            <th>Total</th>
+            <th>Fecha</th>
           </tr>
         </thead>
         <tbody>
-          {ventas
-            .filter((venta) => !vendedor || venta.vendedor === vendedor) // Filtrar ventas por vendedor seleccionado
-            .map((venta) => (
-              <tr key={venta.id}>
-                <td>{venta.total_boletos}</td>
-                <td>{venta.nombre_ruta}</td>
-                <td>{venta.total_venta}</td>
-              </tr>
-            ))}
+          {ventasPorFechaArray.map((venta) => (
+            <tr key={venta.fecha}>
+              <td>{venta.totalBoletos}</td>
+              <td>{venta.vendedores}</td>
+              <td>{venta.rutas}</td>
+              <td>{venta.totalVentas}</td>
+              <td>{venta.fecha}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

@@ -20,14 +20,14 @@ export const Nav = () => {
         <li className="menu-list__item">
           <NavLink to="venta" className="menu-list__link list-end__link">
             <i className="fa-solid fa-house"></i>
-            <span className="menu-list__title">Venta</span>
+            <span className="menu-list__title">Vender</span>
           </NavLink>
         </li>
 
         <li className="menu-list__item">
           <NavLink to="venta-corte" className=" menu-list__link list-end__link">
             <i className="fa-solid fa-list"></i>
-            <span className="menu-list__title">Venta del dia</span>
+            <span className="menu-list__title">Corte de caja</span>
           </NavLink>
         </li>
         

@@ -1,6 +1,7 @@
 'use strict'
 
 const mongoose = require('mongoose');
+const moment = require('moment-timezone');
 
 const connectDB = async () => {
   try {
@@ -9,6 +10,8 @@ const connectDB = async () => {
       useUnifiedTopology: true,
     });
     console.log('Conectado a la base de datos');
+    moment.tz.setDefault('America/Mexico_City');
+
   } catch (error) {
     console.error(error.message);
     process.exit(1);
