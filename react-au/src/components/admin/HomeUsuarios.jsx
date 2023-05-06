@@ -73,7 +73,7 @@ export const HomeUsuarios = () => {
           </section>
         </div>
       </Tab>
-      <Tab eventKey="homerutas" title="Rutas">
+      <Tab eventKey="homerutas" title="Rutas" disabled>
         <div>
           <section className="layout__content">
             <header className="content__header">

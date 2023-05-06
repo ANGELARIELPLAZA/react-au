@@ -31,15 +31,47 @@ const obtenerVenta = async (req, res) => {
   }
 };
 
+const corteVentasGeneral = async (req, res) => {
+  try {
+    const now = new Date(new Date().getTime() - 60 * 60 * 1000).toLocaleString(
+      "es-MX",
+      {
+        timeZone: "America/Mexico_City",
+        hour12: false,
+      }
+    );
+    const today = now.replace(/(\d+)\/(\d+)\/(\d+)\s.*/, "$1/$2/$3");
+    const ventas = await Venta.find({
+      created_at: {
+        $gte: `${today} 00:00:00Z`,
+        $lte: `${today} 23:00:00Z`,
+      },
+    });
+    if (!ventas) {
+      return res
+        .status(404)
+        .json({ status: "error", mensaje: "venta no encontrado" });
+    }
+    res.json(ventas);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "error",
+      mensaje: "Hubo un error al obtener las ventas",
+    });
+  }
+};
 const corteVentas = async (req, res) => {
   try {
     const { vendedor } = req.params;
 
-    const now = new Date(new Date().getTime() - 60 * 60 * 1000)
-      .toLocaleString("es-MX", {
+    const now = new Date(new Date().getTime() - 60 * 60 * 1000).toLocaleString(
+      "es-MX",
+      {
         timeZone: "America/Mexico_City",
         hour12: false,
-      });
+      }
+    );
     const today = now.replace(/(\d+)\/(\d+)\/(\d+)\s.*/, "$1/$2/$3");
     console.log(today);
 
@@ -84,7 +116,6 @@ const corteVentas = async (req, res) => {
     });
   }
 };
-
 const crearVenta = async (req, res, next) => {
   let params = req.body;
   params.num_boletos = "1";
@@ -180,6 +211,7 @@ const crearVenta = async (req, res, next) => {
 module.exports = {
   listarVentas,
   corteVentas,
+  corteVentasGeneral,
   obtenerVenta,
   crearVenta,
 };

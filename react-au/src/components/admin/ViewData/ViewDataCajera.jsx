@@ -3,13 +3,22 @@ import { Global } from "../../../helpers/Global";
 import DataTable from "react-data-table-component";
 import { ReportExcel } from "../ReportExcel";
 import { Badge } from "react-bootstrap";
+
 export const ViewDataCajera = () => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [sellers, setSellers] = useState([]);
   const [selectedSeller, setSelectedSeller] = useState("");
   const token = localStorage.getItem("token");
-
+  const today = new Date();
+  const options = {
+    timeZone: "America/Mexico_City",
+    day: "numeric",
+    month: "numeric",
+    year: "numeric",
+  };
+  const formatter = new Intl.DateTimeFormat("es-MX", options);
+  const fechaActual = formatter.format(today);
   const columns = [
     {
       name: <h3>Numero de boletos</h3>,
@@ -86,7 +95,7 @@ export const ViewDataCajera = () => {
 
   const fetchSales = async () => {
     try {
-      const response = await fetch(Global.url + "ventas/list", {
+      const response = await fetch(Global.url + "ventas/corte/general", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -116,24 +125,49 @@ export const ViewDataCajera = () => {
       console.error(error);
     }
   };
-
   const handleSearch = () => {
-    const today = new Date().toISOString().slice(0, 10); // Obtiene la fecha actual en formato ISO (por ejemplo: '2023-05-04')
     const filteredResults = data.filter((item) => {
-      const fechaSinHora = item.created_at.split("/")[0]; // Obtiene la fecha sin la hora del elemento
+      const fechaVenta = item.created_at.slice(0, 8);
       return (
         item.vendedor.toLowerCase().includes(selectedSeller.toLowerCase()) &&
-        fechaSinHora === today
+        fechaVenta === fechaActual
       );
     });
     setFilteredData(filteredResults);
+  };
+  const getMontoTotal = () => {
+    const filteredVentas = data.filter((venta) => {
+      const fechaVenta = venta.created_at.slice(0, 8);
+      return (
+        venta.vendedor.toLowerCase().includes(selectedSeller.toLowerCase()) &&
+        fechaVenta === fechaActual
+      );
+    });
+    const montoTotal = filteredVentas.reduce((totalventa, venta) => {
+      return totalventa + venta.totalventa;
+    }, 0);
+    return montoTotal;
+  };
+  const getNumBoletosVendidos = () => {
+    const filteredVentas = data.filter((venta) => {
+      const fechaVenta = venta.created_at.slice(0, 8);
+
+      return (
+        venta.vendedor.toLowerCase().includes(selectedSeller.toLowerCase()) &&
+        fechaVenta === fechaActual
+      );
+    });
+    const numBoletosVendidos = filteredVentas.reduce((totalboleto, venta) => {
+      return totalboleto + parseInt(venta.num_boletos);
+    }, 0);
+    return numBoletosVendidos;
   };
 
   useEffect(() => {
     fetchSales();
     fetchSellers();
   }, []);
-  
+
   return (
     <>
       <header className="content__header">
@@ -155,16 +189,17 @@ export const ViewDataCajera = () => {
           </select>
           <button onClick={handleSearch}>Buscar</button>
           <div className="card-header">
-        <h2>
-          Monto total de ganacias del dia:
-          <h2 class="badge text-bg-warning">$0</h2>
-        </h2>
-        <h2>
-          {" "}
-          Monto total de boletos vendidos del dia:
-          <h2 class="badge text-bg-warning">0</h2>
-        </h2>
-      </div>
+            <span>
+              Monto total de ganacias:
+              <h2 className="badge text-bg-warning"> ${getMontoTotal()}</h2>
+            </span>
+            <h2>
+              Monto total de boletos vendidos:
+              <span className="badge text-bg-warning">
+                {getNumBoletosVendidos()}
+              </span>
+            </h2>
+          </div>
           <DataTable
             columns={columns}
             data={filteredData}
