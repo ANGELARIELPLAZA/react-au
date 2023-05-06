@@ -31,14 +31,7 @@ export default function CorteCaja() {
       name: <h3>Fecha y hora</h3>,
       selector: (row) => row.created_at,
       sortable: true,
-      cell: (row) => {
-        const [fecha, hora] = row.created_at.split("/"); // dividir la cadena en fecha y hora
-        return (
-          <div>
-            {fecha} {hora}
-          </div>
-        ); // mostrar solo la fecha
-      },
+      cell: (row) => `${row.created_at}`,
     },
     {
       name: <h3>Vendedor</h3>,
@@ -125,7 +118,6 @@ export default function CorteCaja() {
         },
       });
       const data = await response.json();
-
       setData(data);
       setFilteredData(data);
     } catch (error) {
@@ -168,15 +160,14 @@ export default function CorteCaja() {
     setFilteredData(filteredResults);
   };
   const filterDataByDate = () => {
-    const options = {
-      timeZone: "America/Mexico_City",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    };
-    const currentDate = new Date()
-      .toLocaleString("en-US", options)
-      .replace(/(\d+)\/(\d+)\/(\d+)/, "$3-$1-$2");
+    const now = new Date(new Date().getTime());
+    const currentDate = now
+      .toLocaleString("es-MX", {
+        timeZone: "America/Mexico_City",
+        hour12: false,
+      })
+      .replace(/(\d+)\/(\d+)\/(\d+).*/, "$1/$2/$3");
+
     const filteredResults = data.filter((item) =>
       item.created_at.startsWith(currentDate)
     ); // filtrar por fecha actual

@@ -34,48 +34,22 @@ const obtenerVenta = async (req, res) => {
 const corteVentas = async (req, res) => {
   try {
     const { vendedor } = req.params;
-    const options = {
-      timeZone: "America/Mexico_City",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    };
-    const now = new Date();
-    const diffHours = now.getTimezoneOffset() / 60;
-    now.setHours(now.getHours() - diffHours - 1); // Ajustar la fecha actual según la diferencia horaria
-    const today = now
-      .toLocaleString("es-MX", options)
-      .replace(/(\d+)\/(\d+)\/(\d+)/, "$3-$2-$1");
+
+    const now = new Date(new Date().getTime() - 60 * 60 * 1000)
+      .toLocaleString("es-MX", {
+        timeZone: "America/Mexico_City",
+        hour12: false,
+      });
+    const today = now.replace(/(\d+)\/(\d+)\/(\d+)\s.*/, "$1/$2/$3");
+    console.log(today);
 
     const ventas = await Venta.aggregate([
       {
         $match: {
           vendedor,
-          $expr: {
-            $and: [
-              {
-                $gte: [
-                  {
-                    $dateFromString: {
-                      dateString: "$created_at",
-                      format: "%Y-%m-%d/%H:%M:%S",
-                    },
-                  },
-                  new Date(`${today}T00:00:00Z`),
-                ],
-              },
-              {
-                $lte: [
-                  {
-                    $dateFromString: {
-                      dateString: "$created_at",
-                      format: "%Y-%m-%d/%H:%M:%S",
-                    },
-                  },
-                  new Date(`${today}T23:59:59Z`),
-                ],
-              },
-            ],
+          created_at: {
+            $gte: `${today} 00:00:00Z`,
+            $lte: `${today} 23:00:00Z`,
           },
         },
       },
@@ -88,7 +62,7 @@ const corteVentas = async (req, res) => {
         $group: {
           _id: "$nombre_ruta",
           total_boletos: { $sum: "$num_boletos" },
-          total_venta: { $sum: "$totalventa" }, // Etapa para sumar las ventas
+          total_venta: { $sum: "$totalventa" },
         },
       },
       {
@@ -96,12 +70,11 @@ const corteVentas = async (req, res) => {
           _id: 0,
           nombre_ruta: "$_id",
           total_boletos: "$total_boletos",
-          total_venta: "$total_venta", // Proyectar el total de ventas
-          vendedor: vendedor,
+          total_venta: "$total_venta",
+          vendedor: "$vendedor",
         },
       },
     ]);
-
     res.json(ventas);
   } catch (error) {
     console.error(error);
@@ -174,7 +147,12 @@ const crearVenta = async (req, res, next) => {
       total,
       totalventa,
       caja,
-      created_at: new Date(new Date().getTime() - 60 * 60 * 1000).toLocaleString('es-MX', { timeZone: 'America/Mexico_City', hour12: false }).slice(0, 16),
+      created_at: new Date(new Date().getTime() - 60 * 60 * 1000)
+        .toLocaleString("es-MX", {
+          timeZone: "America/Mexico_City",
+          hour12: false,
+        })
+        .slice(0, 16),
     });
 
     await ventaNueva.save();
