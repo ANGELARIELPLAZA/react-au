@@ -79,7 +79,7 @@ const corteVentas = async (req, res) => {
           vendedor,
           created_at: {
             $gte: `${today} 00:00:00Z`,
-            $lte: `${today} 23:00:00Z`,
+            $lte: `${today} 23:00:00Z`, 
           },
         },
       },
@@ -181,7 +181,7 @@ const crearVenta = async (req, res, next) => {
           timeZone: "America/Mexico_City",
           hour12: false,
         })
-        .slice(0, 16),
+        .slice(0, 20),
     });
 
     await ventaNueva.save();
