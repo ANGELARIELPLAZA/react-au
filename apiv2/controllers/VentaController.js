@@ -184,10 +184,11 @@ const crearVenta = async (req, res, next) => {
         .slice(0, 20),
     });
     console.log(ventaNueva.created_at);
-    const nuevaFecha = ventaNueva.created_at.replace(",", "");
+    ventaNueva.created_at = ventaNueva.created_at.replace(",", "");
 
-    await nuevaFecha.save();
+    console.log(ventaNueva);
 
+    await ventaNueva.save();
     res
       .status(201)
       .json({ status: "success", mensaje: "Venta creada exitosamente" });
