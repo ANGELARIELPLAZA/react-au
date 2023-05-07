@@ -1,7 +1,6 @@
 "use strict";
 const Venta = require("../models/VentaModel");
 const { validarVenta } = require("../helpers/validacionVenta");
-const moment = require("moment"); // Importar Moment.js
 
 const listarVentas = async (req, res) => {
   try {

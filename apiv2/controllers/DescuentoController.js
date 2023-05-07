@@ -45,8 +45,6 @@ const crearDescuento = async (req, res, next) => {
       code,
       nombre_boleto,
       descuento,
-      habilitado: 1,
-      created_at: new Date(),
     });
 
     await descuentoNuevo.save();
@@ -68,7 +66,7 @@ const crearDescuento = async (req, res, next) => {
 };
 
 const actualizarDescuento = async (req, res) => {
-   try {
+  try {
     const { code, nombre_boleto, descuento, habilitado } = req.body; // Cambia el nombre de la variable descuento a descuentoNuevo
     const { id } = req.params;
 
