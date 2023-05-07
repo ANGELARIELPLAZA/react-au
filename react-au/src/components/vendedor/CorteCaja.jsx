@@ -25,19 +25,19 @@ export default function CorteCaja() {
       name: <h3>Descuento*</h3>,
       selector: (row) => row.descuento,
       sortable: true,
-      cell: (row) => `%${row.descuento}`,
+      cell: (row) => {
+        if (row.descuento === 1) {
+          return `%0`;
+        } else {
+          return `%${row.descuento}`;
+        }
+      },
     },
     {
       name: <h3>Fecha y hora</h3>,
       selector: (row) => row.created_at,
       sortable: true,
       cell: (row) => `${row.created_at}`,
-    },
-    {
-      name: <h3>Vendedor</h3>,
-      selector: (row) => row.vendedor,
-      sortable: true,
-      cell: (row) => `${row.vendedor}`,
     },
   ];
   const [data, setData] = useState([]);
@@ -139,7 +139,6 @@ export default function CorteCaja() {
       console.error(error);
     }
   };
-
   const handleSearch = (searchTerm) => {
     const filteredResults = data.filter((item) => {
       const num_boletos = item.num_boletos ? item.num_boletos.toString() : "";
@@ -210,11 +209,11 @@ export default function CorteCaja() {
         </h1>
         <h2>
           Monto total:
-          <h2 class="badge text-bg-warning">${totalGanancias}</h2>
+          <span className="badge text-bg-warning">${totalGanancias}</span>
         </h2>
         <h2>
           Total de boletos:
-          <h2 class="badge text-bg-warning">{totalBoletos}</h2>
+          <span className="badge text-bg-warning">{totalBoletos}</span>
         </h2>
         <button onClick={handlePrint}>Imprimir tabla</button>
       </div>
