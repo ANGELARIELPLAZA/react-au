@@ -101,22 +101,6 @@ export const UpdateBoleto = (props) => {
             }
           />
         </div>
-
-        <div className="form-group">
-          <h3 htmlFor="habilitado">Habilitado</h3>
-          <Form.Select
-            aria-label="Default select example"
-            className="form-control"
-            id="habilitado"
-            value={boletoData?.habilitado || ""}
-            onChange={(e) =>
-              setboletoData({ ...boletoData, habilitado: e.target.value })
-            }
-          >
-            <option value="1">si</option>
-            <option value="0">no</option>
-          </Form.Select>
-        </div>
         <br />
 
         <Button type="submit" className=" btn-success btn-lg m-2">

@@ -47,9 +47,6 @@ const crearRuta = async (req, res, next) => {
       code,
       destino,
       precio,
-      habilitado: 1,
-      fecha_creacion: new Date(),
-      updated_at: new Date(),
     });
 
     await ruta.save();
@@ -59,7 +56,9 @@ const crearRuta = async (req, res, next) => {
   } catch (error) {
     // Si se produce un error de validación, enviar un mensaje de error y un estado al servidor
     if (error.code === 11000) {
-      res.status(400).json({ status: "ya_existe", mensaje: "La ruta ya existe" });
+      res
+        .status(400)
+        .json({ status: "ya_existe", mensaje: "La ruta ya existe" });
     } else {
       res.status(400).json({ status: "error", mensaje: error.message });
     }

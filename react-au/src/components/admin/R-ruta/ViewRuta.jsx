@@ -27,20 +27,6 @@ export default function ViewRuta() {
       cell: (row) => `$${row.precio}`,
     },
     {
-      name: <h3>Habilitado</h3>,
-      selector: (row) => row.habilitado,
-      sortable: true,
-      cell: (row) => {
-        if (row.habilitado === 1) {
-          return <h2 className="badge text-bg-success">Habilitado</h2>;
-        } else if (row.habilitado === 0) {
-          return <h2 className="badge text-bg-danger">Desabilitado</h2>;
-        } else {
-          return "Valor no válido";
-        }
-      },
-    },
-    {
       name: <h3>Editar</h3>,
       button: true,
       cell: (row) => (

@@ -6,19 +6,15 @@ const bcrypt = require("bcrypt");
 
 // Define las reglas de validación
 const reglasValidacion = Joi.object({
-  nombre: Joi.string().required().min(3).messages({
+  nombre: Joi.string().required().min(0).messages({
     "string.base": "debe ser una cadena de texto",
     "any.required": "El campo nombre es requerido",
   }),
-  caja: Joi.number().required().min(0).messages({
-    "string.base": "debe ser un numero",
-    "any.required": "El campo caja es requerido",
-  }),
-  email: Joi.string().email().required().messages({
+  email: Joi.string().required().messages({
     "string.email": "debe ser una dirección de correo electrónico válida",
     "any.required": "El campo correo electrónico es requerido",
   }),
-  contrasena: Joi.string().required().min(8).messages({
+  contrasena: Joi.string().required().min(0).messages({
     "string.base": "debe ser mayor a 8 caracteres",
     "any.required": "El campo contrasena es requerido",
   }),
