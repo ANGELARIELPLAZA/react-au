@@ -83,7 +83,7 @@ export const ViewDataCajera = () => {
 
   const fetchSales = async () => {
     try {
-      const response = await fetch(Global.url + "ventas/corte/general", {
+      const response = await fetch(Global.url + "ventas/list", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

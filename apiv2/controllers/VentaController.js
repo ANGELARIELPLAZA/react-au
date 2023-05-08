@@ -35,10 +35,9 @@ const obtenerVenta = async (req, res) => {
     });
   }
 };
-
 const corteVentasGeneral = async (req, res) => {
   try {
-    const now = new Date(new Date().getTime() - 60 * 60 * 1000).toLocaleString(
+    const now = new Date(new Date().getTime()).toLocaleString(
       "es-MX",
       {
         timeZone: "America/Mexico_City",
@@ -73,7 +72,7 @@ const corteVentas = async (req, res) => {
   try {
     const { vendedor } = req.params;
 
-    const now = new Date(new Date().getTime() - 60 * 60 * 1000).toLocaleString(
+    const now = new Date(new Date().getTime()).toLocaleString(
       "es-MX",
       {
         timeZone: "America/Mexico_City",
