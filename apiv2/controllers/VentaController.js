@@ -198,7 +198,7 @@ const crearVenta = async (req, res, next) => {
         })
         .slice(0, 20),
     });
-    //ventaNueva.created_at = ventaNueva.created_at.replace(" ", ", ");
+    //ventaNueva.created_at = ventaNueva.created_at.replace(" ", ", ");//opcion solo para pc
     await ventaNueva.save();
     res
       .status(201)

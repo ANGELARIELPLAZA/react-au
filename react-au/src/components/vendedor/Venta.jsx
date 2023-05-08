@@ -6,6 +6,8 @@ import printJS from "print-js";
 import { Global } from "../../helpers/Global";
 import { operacionesFunc } from "../../utils/operaciones";
 import QRCode from "qrcode.react";
+import QRCode2 from 'qrcode-generator';
+
 import CryptoJS from "crypto-js";
 let boletosArray = []; // declarar el array vacío
 import { NavLink } from "react-router-dom";
@@ -149,7 +151,6 @@ export const Venta = () => {
   const handleClick = () => {
     // Create a variable to store all tickets
     let tickets = "";
-
     // Create a page for each ticket
     for (let i = 0; i < form.num_boletos; i++) {
       // Create the content of the ticket
@@ -178,15 +179,20 @@ export const Venta = () => {
 
       // Append the ticket content to the tickets variable
       tickets += ticketContent;
-
-      // Add the QR code to the ticket content
       const qrCode = `
-        <div>
-          <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${boletosArray[i].token}" />
-        </div>        <div style="page-break-after: always;"></div>  
-
-      `;
-
+      <div>
+      <img src="${generateQRCode(boletosArray[i].token)}" width="200" height="200" />
+      </div>
+      <div style="page-break-after: always;"></div>
+    `;
+    
+    // Función para generar el código QR utilizando la librería qrcode-generator
+    function generateQRCode(data) {
+      const qr = QRCode2(0, 'L');
+      qr.addData(data);
+      qr.make();
+      return qr.createDataURL();
+    }
       tickets += qrCode;
     }
 
