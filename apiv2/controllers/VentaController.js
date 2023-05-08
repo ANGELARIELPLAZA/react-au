@@ -191,7 +191,7 @@ const crearVenta = async (req, res, next) => {
       total,
       totalventa,
       caja,
-      created_at: new Date(new Date().getTime() - 60 * 60 * 1000)
+      created_at: new Date(new Date().getTime())
         .toLocaleString("es-MX", {
           timeZone: "America/Mexico_City",
           hour12: false,
