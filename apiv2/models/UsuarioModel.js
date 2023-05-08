@@ -27,19 +27,6 @@ const usuarioSchema = new mongoose.Schema({
     enum: ["admin", "usuario"],
     default: "usuario",
   },
-  habilitado: {
-    type: Number,
-    default: 1,
-    required: true,
-  },
-  created_At: {
-    type: Date,
-    default: Date.now,
-  },
-  updated_At: {
-    type: Date,
-    default: Date.now,
-  },
 });
 // método para validar la contraseña
 usuarioSchema.methods.validarContrasena = async function (contrasena) {

@@ -6,11 +6,11 @@ const reglasValidacion = Joi.object({
     "string.base": "debe ser un número",
     "any.required": "El campo code es requerido",
   }),
-  nombre_boleto: Joi.string().required().min(3).messages({
+  nombre_boleto: Joi.string().required().min(1).messages({
     "string.base": "debe ser una cadena de texto",
     "any.required": "El campo nombre de boleto es requerido",
   }),
-  descuento: Joi.number().required().min(3).messages({
+  descuento: Joi.number().required().min(1).messages({
     "number.base": "debe ser un número",
     "any.required": "El campo precio es requerido",
   }),

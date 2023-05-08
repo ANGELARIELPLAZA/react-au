@@ -16,7 +16,7 @@ const crearUsuario = async (req, res, next) => {
   const bytes = CryptoJS.AES.decrypt(encryptedData, "secret-key");
   let params = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
   // Comprobar que me llegan bien (+ validacion)
-  if (!params.name || !params.email || !params.password || !params.caja) {
+  if (!params.name || !params.email || !params.password ) {
     return res.status(400).json({
       status: "error",
       message: "Faltan datos por enviar",
@@ -27,11 +27,10 @@ const crearUsuario = async (req, res, next) => {
     const email = params.email;
     const contrasena = params.password;
     const rol = params.rol;
-    const caja = params.caja;
 
     // Validación avanzada
     try {
-      validarUsuario({ nombre, email, contrasena, caja });
+      validarUsuario({ nombre, email, contrasena });
     } catch (error) {
       return res.status(200).json({
         status: "error",
@@ -53,10 +52,6 @@ const crearUsuario = async (req, res, next) => {
       email,
       contrasena: params.password, // Guardar la contraseña encriptada en la base de datos
       rol,
-      caja,
-      habilitado: 1,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
     await usuario.save();
     res

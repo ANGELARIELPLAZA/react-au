@@ -419,12 +419,17 @@ export const Venta = () => {
         </Modal.Body>
 
         <Modal.Footer>
-          <button variant="secondary" onClick={() => window.location.reload()}>
+          <button
+            className="btn btn-warning"
+            style={{ fontSize: "1.6rem" }}
+            onClick={() => window.location.reload()}
+          >
             Limpiar Venta
           </button>
           <button
             id="imprimirBtn"
-            variant="secondary"
+            className="btn btn-success"
+            style={{ fontSize: "1.6rem" }}
             disabled={enviado}
             onClick={() => handlePrintClick(password)}
           >

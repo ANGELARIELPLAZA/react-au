@@ -2,7 +2,7 @@
 const Joi = require("joi");
 
 const reglasValidacion = Joi.object({
-  code: Joi.number().required().min(4).messages({
+  code: Joi.number().required().min(1).messages({
     "string.base": "debe ser un número",
     "any.required": "El campo code es requerido",
   }),
@@ -10,7 +10,7 @@ const reglasValidacion = Joi.object({
     "string.base": "debe ser una cadena de texto",
     "any.required": "El campo destino es requerido",
   }),
-  precio: Joi.number().required().min(3).messages({
+  precio: Joi.number().required().min(1).messages({
     "number.base": "debe ser un número",
     "any.required": "El campo precio es requerido",
   }),

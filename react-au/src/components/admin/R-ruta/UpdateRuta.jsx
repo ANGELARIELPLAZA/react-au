@@ -65,7 +65,7 @@ export const UpdateRuta = (props) => {
       <form className="register-form " onSubmit={updateBoleto}>
         <br />
         <div className="form-group">
-          <h3 htmlFor="code">Code de Boleto</h3>
+          <h3 htmlFor="code">Codigo de ruta</h3>
           <input
             type="text"
             className="form-control"
@@ -77,7 +77,7 @@ export const UpdateRuta = (props) => {
           />
         </div>
         <div className="form-group">
-          <h3 htmlFor="destino">Nombre del Boleto</h3>
+          <h3 htmlFor="destino">Nombre del ruta</h3>
           <input
             type="text"
             className="form-control"
@@ -90,7 +90,7 @@ export const UpdateRuta = (props) => {
         </div>
 
         <div className="form-group">
-          <h3 htmlFor="precio">Precio</h3>
+          <h3 htmlFor="precio">Precio de ruta</h3>
           <input
             type="text"
             className="form-control"
@@ -101,23 +101,6 @@ export const UpdateRuta = (props) => {
             }
           />
         </div>
-
-        <div className="form-group">
-          <h3 htmlFor="habilitado">Habilitado</h3>
-          <Form.Select
-            aria-label="Default select example"
-            className="form-control"
-            id="habilitado"
-            value={boletoData?.habilitado || ""}
-            onChange={(e) =>
-              setboletoData({ ...boletoData, habilitado: e.target.value })
-            }
-          >
-            <option value="1">si</option>
-            <option value="0">no</option>
-          </Form.Select>
-        </div>
-        <br />
 
         <Button type="submit" className=" btn-success btn-lg m-2">
           Actualizar

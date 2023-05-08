@@ -14,6 +14,7 @@ export const RegisterUsuario = () => {
   const saveUser = async (e) => {
     e.preventDefault();
     let newUser = form;
+    console.log(newUser)
     const encryptedData = CryptoJS.AES.encrypt(
       JSON.stringify(newUser),
       "secret-key"
@@ -82,7 +83,7 @@ export const RegisterUsuario = () => {
                 <div className="form-group">
                   <h2 htmlFor="email">Correo electronico</h2>
                   <input
-                    type="email"
+                    type="text"
                     name="email"
                     onChange={changed}
                     required

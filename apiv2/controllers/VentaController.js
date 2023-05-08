@@ -1,21 +1,26 @@
 "use strict";
 const Venta = require("../models/VentaModel");
 const { validarVenta } = require("../helpers/validacionVenta");
-const moment = require("moment"); // Importar Moment.js
 
 const listarVentas = async (req, res) => {
   try {
     const ventas = await Venta.find();
+
+    for (let i = 0; i < ventas.length; i++) {
+      ventas[i].created_at = ventas[i].created_at.replace(",", "");
+    }
     res.json(ventas);
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: "Hubo un error al listar las ventas" });
   }
 };
-
 const obtenerVenta = async (req, res) => {
   try {
     const ventas = await Venta.find({ vendedor: req.params.vendedor });
+    for (let i = 0; i < ventas.length; i++) {
+      ventas[i].created_at = ventas[i].created_at.replace(",", "");
+    }
     if (!ventas) {
       return res
         .status(404)
@@ -43,10 +48,13 @@ const corteVentasGeneral = async (req, res) => {
     const today = now.replace(/(\d+)\/(\d+)\/(\d+)\s.*/, "$1/$2/$3");
     const ventas = await Venta.find({
       created_at: {
-        $gte: `${today} 00:00:00Z`,
-        $lte: `${today} 23:00:00Z`,
+        $gte: `${today}, 00:00:00Z`,
+        $lte: `${today}, 23:00:00Z`,
       },
     });
+    for (let i = 0; i < ventas.length; i++) {
+      ventas[i].created_at = ventas[i].created_at.replace(",", "");
+    }
     if (!ventas) {
       return res
         .status(404)
@@ -78,8 +86,8 @@ const corteVentas = async (req, res) => {
         $match: {
           vendedor,
           created_at: {
-            $gte: `${today} 00:00:00Z`,
-            $lte: `${today} 23:00:00Z`,
+            $gte: `${today}, 00:00:00Z`,
+            $lte: `${today}, 23:00:00Z`,
           },
         },
       },
@@ -105,6 +113,13 @@ const corteVentas = async (req, res) => {
         },
       },
     ]);
+    for (let i = 0; i < ventas.length; i++) {
+      if (ventas[i].created_at) {
+        ventas[i].created_at = ventas[i].created_at.replace(",", "");
+      }
+    }
+
+
     res.json(ventas);
   } catch (error) {
     console.error(error);
@@ -183,11 +198,8 @@ const crearVenta = async (req, res, next) => {
         })
         .slice(0, 20),
     });
-    console.log(ventaNueva.created_at);
-    const nuevaFecha = ventaNueva.created_at.replace(",", "");
-
-    await nuevaFecha.save();
-
+    //ventaNueva.created_at = ventaNueva.created_at.replace(" ", ", ");
+    await ventaNueva.save();
     res
       .status(201)
       .json({ status: "success", mensaje: "Venta creada exitosamente" });

@@ -14,18 +14,9 @@ let descuentoSchema = new Schema({
     type: Number,
     required: true,
   },
-  created_at: {
-    type: Date,
-    default: Date.now,
-  },
-  habilitado: {
-    type: Number,
-    default: 1,
-    required: true,
-  },
 });
 // Define the static method "findByCode" in the Descuento schema
-descuentoSchema.statics.findByCode = async function(code) {
+descuentoSchema.statics.findByCode = async function (code) {
   return await this.findOne({ code: code });
 };
 

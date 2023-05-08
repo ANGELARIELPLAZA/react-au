@@ -79,7 +79,7 @@ export const UpdateUser = (props) => {
         </div>
 
         <div className="form-group">
-          <h3 htmlFor="email">Correo</h3>
+          <h3 htmlFor="email">Usuario</h3>
           <input
             type="text"
             className="form-control"
@@ -98,9 +98,7 @@ export const UpdateUser = (props) => {
             className="form-control"
             id="caja"
             value={userData?.caja || ""}
-            onChange={(e) =>
-              setUserData({ ...userData, caja: e.target.value })
-            }
+            onChange={(e) => setUserData({ ...userData, caja: e.target.value })}
           >
             <option value="1">1</option>
             <option value="2">2</option>
@@ -133,22 +131,6 @@ export const UpdateUser = (props) => {
           >
             <option value="usuario">Usuario</option>
             <option value="admin">Administrador</option>
-          </Form.Select>
-        </div>
-        <br />
-        <div className="form-group">
-          <h3 htmlFor="habilitado">Habilitado</h3>
-          <Form.Select
-            aria-label="Default select example"
-            className="form-control"
-            id="habilitado"
-            value={userData?.habilitado || ""}
-            onChange={(e) =>
-              setUserData({ ...userData, habilitado: e.target.value })
-            }
-          >
-            <option value="1">si</option>
-            <option value="0">no</option>
           </Form.Select>
         </div>
         <br />
