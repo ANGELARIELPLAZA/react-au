@@ -70,7 +70,7 @@ export const ViewDataTurno1 = () => {
   ];
   const fetchData = async () => {
     try {
-      const response = await fetch(Global.url + "ventas/corte/general", {
+      const response = await fetch(Global.url + "ventas/list", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
