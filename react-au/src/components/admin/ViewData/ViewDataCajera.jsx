@@ -91,6 +91,7 @@ export const ViewDataCajera = () => {
         },
       });
       const data = await response.json();
+      console.log(data)
       setData(data);
       setFilteredData(data);
     } catch (error) {
