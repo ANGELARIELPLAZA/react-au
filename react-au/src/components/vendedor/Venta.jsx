@@ -23,6 +23,7 @@ export const Venta = () => {
   const [dateTime, setDateTime] = useState("");
   const [contador, setContador] = useState(1);
   const [enviado, setEnviado] = useState(false);
+  const [enviadoform, setEnviadoform] = useState(false);
 
   function suma() {
     setContador(contador + 1);
@@ -61,7 +62,7 @@ export const Venta = () => {
 
   const saveBoleto = async (e) => {
     e.preventDefault();
-
+    setEnviadoform(true);
     try {
       const response = await fetch(Global.url + "rutas/list", {
         method: "GET",
@@ -72,7 +73,6 @@ export const Venta = () => {
       });
 
       const data = await response.json();
-
       newBoleto = form;
       if (
         typeof newBoleto.descuento === "string" &&
@@ -330,6 +330,7 @@ export const Venta = () => {
                 <input
                   type="submit"
                   value="Hacer venta"
+                  disabled={enviadoform}
                   className="btn btn-success"
                   style={{ fontSize: "3.6rem" }}
                 />

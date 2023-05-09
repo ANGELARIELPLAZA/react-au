@@ -134,6 +134,7 @@ export default function CorteCaja() {
         },
       });
       const data2 = await response2.json();
+      console.log(data2)
       setData2(data2);
     } catch (error) {
       console.error(error);
