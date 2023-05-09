@@ -38,18 +38,18 @@ const obtenerVenta = async (req, res) => {
 const corteVentasGeneral = async (req, res) => {
   try {
     const ventas = await Venta.find();
-
+    for (let i = 0; i < ventas.length; i++) {
+      ventas[i].created_at = ventas[i].created_at.replace(",", "");
+    }
     // Filtrar ventas del mismo día
     const now = new Date(new Date().getTime()).toLocaleString("es-MX", {
       timeZone: "America/Mexico_City",
       hour12: false,
     });
     const today = now.replace(/(\d+)\/(\d+)\/(\d+)\s.*/, "$1/$2/$3");
-    const ventasMismoDia = ventas.filter((venta) =>
-      venta.created_at.startsWith(today)
+    const ventasMismoDia = ventas.filter((ventas) =>
+      ventas.created_at.startsWith(today)
     );
-
-    console.log(ventasMismoDia);
     res.json(ventasMismoDia);
   } catch (error) {
     console.error(error);
@@ -68,25 +68,10 @@ const corteVentas = async (req, res) => {
       hour12: false,
     });
     const today = now.replace(/(\d+)\/(\d+)\/(\d+)\s.*/, "$1/$2/$3");
-    const ventasMismoDia = ventas.filter((venta) =>
-      venta.created_at.startsWith(today)
+    const ventasMismoDia = ventas.filter((ventas) =>
+      ventas.created_at.startsWith(today)
     );
-    // Agrupar las ventas por ruta y sumar la cantidad de boletos
-    const ventasAgrupadas = ventasMismoDia.reduce((acumulador, venta) => {
-      const { nombre_ruta, num_boletos } = venta;
-      if (!acumulador[nombre_ruta]) {
-        acumulador[nombre_ruta] = { nombre_ruta, total_boletos: 0 };
-      }
-      acumulador[nombre_ruta].total_boletos += parseInt(num_boletos, 10);
-      return acumulador;
-    }, {});
-
-    // Convertir el objeto con las ventas agrupadas en un array
-    const resultado = Object.values(ventasAgrupadas);
-
-    console.log(resultado);
-    res.json(resultado);
-
+    res.json(ventasMismoDia);
   } catch (error) {
     console.error(error);
     res.status(500).json({
