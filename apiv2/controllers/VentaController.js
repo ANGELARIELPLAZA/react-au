@@ -37,29 +37,20 @@ const obtenerVenta = async (req, res) => {
 };
 const corteVentasGeneral = async (req, res) => {
   try {
-    const now = new Date(new Date().getTime()).toLocaleString(
-      "es-MX",
-      {
-        timeZone: "America/Mexico_City",
-        hour12: false,
-      }
-    );
-    const today = now.replace(/(\d+)\/(\d+)\/(\d+)\s.*/, "$1/$2/$3");
-    const ventas = await Venta.find({
-      created_at: {
-        $gte: `${today}, 00:00:00Z`,
-        $lte: `${today}, 23:00:00Z`,
-      },
+    const ventas = await Venta.find();
+
+    // Filtrar ventas del mismo día
+    const now = new Date(new Date().getTime()).toLocaleString("es-MX", {
+      timeZone: "America/Mexico_City",
+      hour12: false,
     });
-    for (let i = 0; i < ventas.length; i++) {
-      ventas[i].created_at = ventas[i].created_at.replace(",", "");
-    }
-    if (!ventas) {
-      return res
-        .status(404)
-        .json({ status: "error", mensaje: "venta no encontrado" });
-    }
-    res.json(ventas);
+    const today = now.replace(/(\d+)\/(\d+)\/(\d+)\s.*/, "$1/$2/$3");
+    const ventasMismoDia = ventas.filter((venta) =>
+      venta.created_at.startsWith(today)
+    );
+
+    console.log(ventasMismoDia);
+    res.json(ventasMismoDia);
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -70,56 +61,32 @@ const corteVentasGeneral = async (req, res) => {
 };
 const corteVentas = async (req, res) => {
   try {
-    const { vendedor } = req.params;
-
-    const now = new Date(new Date().getTime()).toLocaleString(
-      "es-MX",
-      {
-        timeZone: "America/Mexico_City",
-        hour12: false,
-      }
-    );
+    const ventas = await Venta.find({ vendedor: req.params.vendedor });
+    // Filtrar ventas del mismo día
+    const now = new Date(new Date().getTime()).toLocaleString("es-MX", {
+      timeZone: "America/Mexico_City",
+      hour12: false,
+    });
     const today = now.replace(/(\d+)\/(\d+)\/(\d+)\s.*/, "$1/$2/$3");
-    const ventas = await Venta.aggregate([
-      {
-        $match: {
-          vendedor,
-          created_at: {
-            $gte: `${today}, 00:00:00Z`,
-            $lte: `${today}, 23:00:00Z`,
-          },
-        },
-      },
-      {
-        $addFields: {
-          num_boletos: { $toInt: "$num_boletos" },
-        },
-      },
-      {
-        $group: {
-          _id: "$nombre_ruta",
-          total_boletos: { $sum: "$num_boletos" },
-          total_venta: { $sum: "$totalventa" },
-        },
-      },
-      {
-        $project: {
-          _id: 0,
-          nombre_ruta: "$_id",
-          total_boletos: "$total_boletos",
-          total_venta: "$total_venta",
-          vendedor: "$vendedor",
-        },
-      },
-    ]);
-    for (let i = 0; i < ventas.length; i++) {
-      if (ventas[i].created_at) {
-        ventas[i].created_at = ventas[i].created_at.replace(",", "");
+    const ventasMismoDia = ventas.filter((venta) =>
+      venta.created_at.startsWith(today)
+    );
+    // Agrupar las ventas por ruta y sumar la cantidad de boletos
+    const ventasAgrupadas = ventasMismoDia.reduce((acumulador, venta) => {
+      const { nombre_ruta, num_boletos } = venta;
+      if (!acumulador[nombre_ruta]) {
+        acumulador[nombre_ruta] = { nombre_ruta, total_boletos: 0 };
       }
-    }
+      acumulador[nombre_ruta].total_boletos += parseInt(num_boletos, 10);
+      return acumulador;
+    }, {});
 
+    // Convertir el objeto con las ventas agrupadas en un array
+    const resultado = Object.values(ventasAgrupadas);
 
-    res.json(ventas);
+    console.log(resultado);
+    res.json(resultado);
+
   } catch (error) {
     console.error(error);
     res.status(500).json({

@@ -7,7 +7,6 @@ import { GraphicVentaTime } from "./graphic/GraphicVentaTime";
 import { GraphicRuta } from "./graphic/GraphicRuta";
 import { GraphicRutaSeries } from "./graphic/GraphicRutaSeries";
 import { GraphicRutaTime } from "./graphic/GraphicRutaTime";
-import { Ventas } from "./ApiProvider/Ventas";
 
 export const HomeUsuarios = () => {
   const [dateTime, setDateTime] = useState("");
@@ -117,9 +116,6 @@ export const HomeUsuarios = () => {
             <br />
           </section>
         </div>
-      </Tab>
-      <Tab eventKey="homeusuarios" title="Usuarios">
-        <Ventas />
       </Tab>
     </Tabs>
   );

@@ -4,7 +4,7 @@ import DataTable from "react-data-table-component";
 import { ReportExcel } from "../ReportExcel";
 import { Badge } from "react-bootstrap";
 
-export const ViewDataCajera = () => {
+export const ViewDataCajera = ({ datos }) => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [sellers, setSellers] = useState([]);
@@ -80,23 +80,17 @@ export const ViewDataCajera = () => {
       ),
     },
   ];
-
   const fetchSales = async () => {
-    try {
-      const response = await fetch(Global.url + "ventas/list", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-      });
-      const data = await response.json();
-      console.log(data)
-      setData(data);
-      setFilteredData(data);
-    } catch (error) {
-      console.error(error);
-    }
+    setData(datos);
+    setFilteredData(datos);
+    const filteredResults = datos.filter((item) => {
+      const fechaVenta = item.created_at.slice(0, 8);
+      return (
+        item.vendedor.toLowerCase().includes(selectedSeller.toLowerCase()) &&
+        fechaVenta === fechaActual
+      );
+    });
+    setFilteredData(filteredResults);
   };
 
   const fetchSellers = async () => {
@@ -110,7 +104,7 @@ export const ViewDataCajera = () => {
       });
       const sellers = await response.json();
       setSellers(sellers);
-      handleSearch
+      handleSearch;
     } catch (error) {
       console.error(error);
     }
@@ -167,17 +161,18 @@ export const ViewDataCajera = () => {
       <div className="card bg-light mb-">
         <div className="card-body">
           <select
+          className="mb"
             value={selectedSeller}
             onChange={(e) => setSelectedSeller(e.target.value)}
           >
-            <option value="">Selecciona un vendedor</option>
+            <option value="">Todos los vendedores</option>
             {sellers.map((seller) => (
               <option key={seller._id} value={seller.nombre}>
                 {seller.nombre}
               </option>
             ))}
           </select>
-          <button onClick={handleSearch}>Buscar</button>
+          <button onClick={fetchSales}>Actualizar datos</button>
           <div className="card-header">
             <span>
               Monto total:
