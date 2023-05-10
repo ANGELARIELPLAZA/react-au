@@ -8,8 +8,10 @@ export const TableData = ({ datos }) => {
           <tr>
             <th>vendedor</th>
             <th>Ruta</th>
-            <th>total</th>
+            <th>Ganancia</th>
+            <th>Descuento Aplicado</th>
             <th>Fecha</th>
+            <th>Hora</th>
 
           </tr>
         </thead>
@@ -18,8 +20,10 @@ export const TableData = ({ datos }) => {
             <tr key={datos._id}>
               <td>{datos.vendedor}</td>
               <td>{datos.nombre_ruta}</td>
-              <td>{datos.total}</td>
-              <td>{datos.created_at}</td>
+              <td>{datos.totalventa}</td>
+              <td>%{datos.descuento}</td>
+              <td>{datos.fecha}</td>
+              <td>{datos.hora}</td>
             </tr>
           ))}
         </tbody>

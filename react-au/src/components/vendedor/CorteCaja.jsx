@@ -44,8 +44,15 @@ export default function CorteCaja() {
       selector: (row) => row.hora,
       sortable: true,
       cell: (row) => `${row.hora}`,
+      sortFunction: (a, b) => {
+        const timeA = new Date(`10/5/2023 ${hora}`).getTime();
+        const timeB = new Date(`10/5/2023 ${hora}`).getTime();
+        return timeB - timeA;
+      },
     },
+    
   ];
+  
   const [data, setData] = useState([]);
   const [data2, setData2] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -124,6 +131,7 @@ export default function CorteCaja() {
         },
       });
       const data = await response.json();
+      console.log(data)
       setData(data);
       setFilteredData(data);
     } catch (error) {
@@ -198,7 +206,7 @@ export default function CorteCaja() {
           data={filteredData}
           pagination
           persistTableHead
-          paginationPerPage={5000}
+          paginationPerPage={5}
           paginationRowsPerPageOptions={[5, 10, 15, 20, 25, 30, 50, 100]}
         />
       </div>

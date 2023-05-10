@@ -2,16 +2,15 @@ import React, { useState } from "react";
 import DataTable from "react-data-table-component";
 import { Badge } from "react-bootstrap";
 
-export const ViewDataTurno1 = ({datos}) => {
-  const horaInicioTurno = new Date();
-  horaInicioTurno.setHours(5, 30, 0, 0); // 5:30 AM
-  const horaFinTurno = new Date();
-  horaFinTurno.setHours(14, 0, 0, 0); // 2:00 PM
-  
+export const ViewDataTurno1 = ({ datos }) => {
+
   const datosFiltrados = datos.filter((dato) => {
-    const hora = new Date(dato.created_at).getHours();
-    const minutos = new Date(dato.created_at).getMinutes();
-    return (hora > 5 && hora < 14) || (hora === 5 && minutos >= 30) || (hora === 14 && minutos === 0);
+    const [hora, minutos] = dato.hora.split(":");
+    return (
+      (hora > 5 && hora < 14) ||
+      (hora === "05" && minutos >= "30") ||
+      (hora === "14" && minutos === "00")
+    );
   });
 
   const columns = [
@@ -39,9 +38,15 @@ export const ViewDataTurno1 = ({datos}) => {
     },
     {
       name: <h3>Fecha </h3>,
-      selector: (row) => row.created_at,
+      selector: (row) => row.fecha,
       sortable: true,
-      cell: (row) => `${row.created_at}`,
+      cell: (row) => `${row.fecha}`,
+    },
+    {
+      name: <h3>Hora </h3>,
+      selector: (row) => row.hora,
+      sortable: true,
+      cell: (row) => `${row.hora}`,
     },
     {
       name: <h3>Caja</h3>,
@@ -54,19 +59,6 @@ export const ViewDataTurno1 = ({datos}) => {
       selector: (row) => row.vendedor,
       sortable: true,
       cell: (row) => `${row.vendedor}`,
-    },
-    {
-      name: <h3>ESTADO</h3>,
-      selector: (row) => row.token,
-      cell: (row) => (
-        <div>
-          {row.token ? (
-            <Badge bg="success">boleto activo</Badge>
-          ) : (
-            <Badge bg="warning">boleto cancelado</Badge>
-          )}
-        </div>
-      ),
     },
   ];
 

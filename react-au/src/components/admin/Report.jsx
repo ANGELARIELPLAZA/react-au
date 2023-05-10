@@ -48,7 +48,7 @@ export const Report = () => {
                 Ventas por turno
               </ListGroup.Item>
               <ListGroup.Item eventKey="third">
-                Ventas por vendedora
+                Ventas por vende..
               </ListGroup.Item>
             </ListGroup>
           </div>

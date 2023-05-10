@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Global } from "../../../helpers/Global";
 import DataTable from "react-data-table-component";
 import { ReportExcel } from "../ReportExcel";
-import { Badge } from "react-bootstrap";
 
 export const ViewDataCajera = ({ datos }) => {
   const [data, setData] = useState([]);
@@ -10,15 +9,6 @@ export const ViewDataCajera = ({ datos }) => {
   const [sellers, setSellers] = useState([]);
   const [selectedSeller, setSelectedSeller] = useState("");
   const token = localStorage.getItem("token");
-  const today = new Date();
-  const options = {
-    timeZone: "America/Mexico_City",
-    day: "numeric",
-    month: "numeric",
-    year: "numeric",
-  };
-  const formatter = new Intl.DateTimeFormat("es-MX", options);
-  const fechaActual = formatter.format(today);
   const columns = [
     {
       name: <h3>Numero de boletos</h3>,
@@ -43,22 +33,16 @@ export const ViewDataCajera = ({ datos }) => {
       cell: (row) => `$${row.descuento}`,
     },
     {
-      name: <h3>Total sin descuento</h3>,
-      selector: (row) => row.total,
-      sortable: true,
-      cell: (row) => `$${row.total}`,
-    },
-    {
       name: <h3>Fecha </h3>,
-      selector: (row) => row.created_at,
+      selector: (row) => row.fecha,
       sortable: true,
-      cell: (row) => `${row.created_at}`,
+      cell: (row) => `${row.fecha}`,
     },
     {
-      name: <h3>Caja</h3>,
-      selector: (row) => row.caja,
+      name: <h3>Hora</h3>,
+      selector: (row) => row.hora,
       sortable: true,
-      cell: (row) => `${row.caja}`,
+      cell: (row) => `${row.hora}`,
     },
     {
       name: <h3>Vendedor</h3>,
@@ -66,31 +50,10 @@ export const ViewDataCajera = ({ datos }) => {
       sortable: true,
       cell: (row) => `${row.vendedor}`,
     },
-    {
-      name: <h3>ESTADO</h3>,
-      selector: (row) => row.token,
-      cell: (row) => (
-        <div>
-          {row.token ? (
-            <Badge bg="success">boleto activo</Badge>
-          ) : (
-            <Badge bg="warning">boleto cancelado</Badge>
-          )}
-        </div>
-      ),
-    },
   ];
   const fetchSales = async () => {
     setData(datos);
     setFilteredData(datos);
-    const filteredResults = datos.filter((item) => {
-      const fechaVenta = item.created_at.slice(0, 8);
-      return (
-        item.vendedor.toLowerCase().includes(selectedSeller.toLowerCase()) &&
-        fechaVenta === fechaActual
-      );
-    });
-    setFilteredData(filteredResults);
   };
 
   const fetchSellers = async () => {
@@ -104,47 +67,40 @@ export const ViewDataCajera = ({ datos }) => {
       });
       const sellers = await response.json();
       setSellers(sellers);
-      handleSearch;
     } catch (error) {
       console.error(error);
     }
   };
-  const handleSearch = () => {
-    const filteredResults = data.filter((item) => {
-      const fechaVenta = item.created_at.slice(0, 8);
-      return (
-        item.vendedor.toLowerCase().includes(selectedSeller.toLowerCase()) &&
-        fechaVenta === fechaActual
-      );
-    });
-    setFilteredData(filteredResults);
-  };
-  const getMontoTotal = () => {
-    const filteredVentas = data.filter((venta) => {
-      const fechaVenta = venta.created_at.slice(0, 8);
-      return (
-        venta.vendedor.toLowerCase().includes(selectedSeller.toLowerCase()) &&
-        fechaVenta === fechaActual
-      );
-    });
-    const montoTotal = filteredVentas.reduce((totalventa, venta) => {
-      return totalventa + venta.totalventa;
-    }, 0);
-    return montoTotal;
-  };
-  const getNumBoletosVendidos = () => {
-    const filteredVentas = data.filter((venta) => {
-      const fechaVenta = venta.created_at.slice(0, 8);
 
-      return (
-        venta.vendedor.toLowerCase().includes(selectedSeller.toLowerCase()) &&
-        fechaVenta === fechaActual
+  const calculateTotalSalesBySeller = (sellerName) => {
+    const filteredSales = datos.filter(
+      (venta) => venta.vendedor === sellerName
+    );
+    const totalBoletos = filteredSales.reduce(
+      (total, venta) => total + parseInt(venta.num_boletos),
+      0
+    );
+    const totalVenta = filteredSales.reduce(
+      (total, venta) => total + venta.totalventa,
+      0
+    );
+    return {
+      totalBoletos,
+      totalVenta,
+    };
+  };
+
+  const handleSellerChange = (e) => {
+    const selectedSeller = e.target.value;
+    setSelectedSeller(selectedSeller);
+    if (selectedSeller) {
+      const filteredSales = datos.filter(
+        (venta) => venta.vendedor === selectedSeller
       );
-    });
-    const numBoletosVendidos = filteredVentas.reduce((totalboleto, venta) => {
-      return totalboleto + parseInt(venta.num_boletos);
-    }, 0);
-    return numBoletosVendidos;
+      setFilteredData(filteredSales);
+    } else {
+      setFilteredData(datos);
+    }
   };
 
   useEffect(() => {
@@ -161,36 +117,46 @@ export const ViewDataCajera = ({ datos }) => {
       <div className="card bg-light mb-">
         <div className="card-body">
           <select
-          className="mb"
+            className="mb"
             value={selectedSeller}
-            onChange={(e) => setSelectedSeller(e.target.value)}
+            onChange={handleSellerChange}
           >
-            <option value="">Todos los vendedores</option>
+            <option value="">Elegir vendedor</option>
             {sellers.map((seller) => (
               <option key={seller._id} value={seller.nombre}>
                 {seller.nombre}
               </option>
             ))}
           </select>
-          <button onClick={fetchSales}>Actualizar datos</button>
           <div className="card-header">
-            <span>
-              Monto total:
-              <h2 className="badge text-bg-warning"> ${getMontoTotal()}</h2>
-            </span>
-            <h2>
-              Total de boletos :
-              <span className="badge text-bg-warning">
-                {getNumBoletosVendidos()}
-              </span>
-            </h2>
+            {/* Monto total por vendedor */}
+            {selectedSeller ? (
+              <h2>
+                <span>
+                  Monto total para {selectedSeller}:
+                  <span className="badge text-bg-warning">
+                    ${calculateTotalSalesBySeller(selectedSeller).totalVenta}
+                  </span>
+                </span>
+              </h2>
+            ) : null}
+
+            {/* Número total de boletos por vendedor */}
+            {selectedSeller ? (
+              <h2>
+                Total de boletos para {selectedSeller}:
+                <span className="badge text-bg-warning">
+                  {calculateTotalSalesBySeller(selectedSeller).totalBoletos}
+                </span>
+              </h2>
+            ) : null}
           </div>
           <DataTable
             columns={columns}
             data={filteredData}
             pagination
             persistTableHead
-            paginationPerPage={200}
+            paginationPerPage={5}
             paginationRowsPerPageOptions={[5, 10, 15, 20, 25, 30, 50, 100]}
             defaultSortField="valor"
             defaultSortAsc={true}

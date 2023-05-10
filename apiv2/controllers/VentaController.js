@@ -27,6 +27,15 @@ const obtenerVenta = async (req, res) => {
         ventasMismoDia.push(ventas[i]);
       }
     }
+    // Ordenar por hora de menor a mayor
+    ventasMismoDia.sort((a, b) => {
+      const horaA = a.hora.split(":");
+      const horaB = b.hora.split(":");
+      const minutosA = parseInt(horaA[0]) * 60 + parseInt(horaA[1]);
+      const minutosB = parseInt(horaB[0]) * 60 + parseInt(horaB[1]);
+      return minutosB - minutosA;
+    });
+    
     res.json(ventasMismoDia);
   } catch (error) {
     console.error(error);
@@ -47,6 +56,15 @@ const corteVentasGeneral = async (req, res) => {
         ventasMismoDia.push(ventas[i]);
       }
     }
+    // Ordenar por hora de menor a mayor
+    ventasMismoDia.sort((a, b) => {
+      const horaA = a.hora.split(":");
+      const horaB = b.hora.split(":");
+      const minutosA = parseInt(horaA[0]) * 60 + parseInt(horaA[1]);
+      const minutosB = parseInt(horaB[0]) * 60 + parseInt(horaB[1]);
+      return minutosB - minutosA;
+    });
+
     res.json(ventasMismoDia);
   } catch (error) {
     console.error(error);
