@@ -1,14 +1,15 @@
 "use strict";
 const Venta = require("../models/VentaModel");
 const { validarVenta } = require("../helpers/validacionVenta");
+var fechaActual = new Date();
+// Obtener solo la fecha en formato legible
+var fecha = fechaActual.toLocaleDateString();
+// Obtener solo la hora en formato legible
+var hora = fechaActual.toLocaleTimeString();
 
 const listarVentas = async (req, res) => {
   try {
     const ventas = await Venta.find();
-
-    for (let i = 0; i < ventas.length; i++) {
-      ventas[i].created_at = ventas[i].created_at.replace(",", "");
-    }
     res.json(ventas);
   } catch (error) {
     console.error(error);
@@ -18,15 +19,15 @@ const listarVentas = async (req, res) => {
 const obtenerVenta = async (req, res) => {
   try {
     const ventas = await Venta.find({ vendedor: req.params.vendedor });
+    const ventasMismoDia = [];
+    let ventaFecha = "";
     for (let i = 0; i < ventas.length; i++) {
-      ventas[i].created_at = ventas[i].created_at.replace(",", "");
+      ventaFecha = ventas[i].fecha;
+      if (ventaFecha === fecha) {
+        ventasMismoDia.push(ventas[i]);
+      }
     }
-    if (!ventas) {
-      return res
-        .status(404)
-        .json({ status: "error", mensaje: "venta no encontrado" });
-    }
-    res.json(ventas);
+    res.json(ventasMismoDia);
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -38,18 +39,14 @@ const obtenerVenta = async (req, res) => {
 const corteVentasGeneral = async (req, res) => {
   try {
     const ventas = await Venta.find();
+    const ventasMismoDia = [];
+    let ventaFecha = "";
     for (let i = 0; i < ventas.length; i++) {
-      ventas[i].created_at = ventas[i].created_at.replace(",", "");
+      ventaFecha = ventas[i].fecha;
+      if (ventaFecha === fecha) {
+        ventasMismoDia.push(ventas[i]);
+      }
     }
-    // Filtrar ventas del mismo día
-    const now = new Date(new Date().getTime()).toLocaleString("es-MX", {
-      timeZone: "America/Mexico_City",
-      hour12: false,
-    });
-    const today = now.replace(/(\d+)\/(\d+)\/(\d+)\s.*/, "$1/$2/$3");
-    const ventasMismoDia = ventas.filter((ventas) =>
-      ventas.created_at.startsWith(today)
-    );
     res.json(ventasMismoDia);
   } catch (error) {
     console.error(error);
@@ -63,15 +60,35 @@ const corteVentas = async (req, res) => {
   try {
     const ventas = await Venta.find({ vendedor: req.params.vendedor });
     // Filtrar ventas del mismo día
-    const now = new Date(new Date().getTime()).toLocaleString("es-MX", {
-      timeZone: "America/Mexico_City",
-      hour12: false,
-    });
-    const today = now.replace(/(\d+)\/(\d+)\/(\d+)\s.*/, "$1/$2/$3");
-    const ventasMismoDia = ventas.filter((ventas) =>
-      ventas.created_at.startsWith(today)
-    );
-    res.json(ventasMismoDia);
+    const ventasMismoDia = [];
+    let ventaFecha = "";
+    for (let i = 0; i < ventas.length; i++) {
+      ventaFecha = ventas[i].fecha;
+      if (ventaFecha === fecha) {
+        ventasMismoDia.push(ventas[i]);
+      }
+    }
+    // Sumar número de boletos por ruta
+    const ventasPorRuta = {};
+    for (let i = 0; i < ventasMismoDia.length; i++) {
+      const venta = ventasMismoDia[i];
+      if (venta.nombre_ruta in ventasPorRuta) {
+        ventasPorRuta[venta.nombre_ruta] += parseInt(venta.num_boletos);
+      } else {
+        ventasPorRuta[venta.nombre_ruta] = parseInt(venta.num_boletos);
+      }
+    }
+
+    // Convertir a formato deseado
+    const resultadoFinal = [];
+    for (const nombre_ruta in ventasPorRuta) {
+      resultadoFinal.push({
+        nombre_ruta,
+        total_boletos: ventasPorRuta[nombre_ruta],
+      });
+    }
+
+    res.json(resultadoFinal);
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -142,12 +159,8 @@ const crearVenta = async (req, res, next) => {
       total,
       totalventa,
       caja,
-      created_at: new Date(new Date().getTime())
-        .toLocaleString("es-MX", {
-          timeZone: "America/Mexico_City",
-          hour12: false,
-        })
-        .slice(0, 20),
+      fecha: fecha,
+      hora: hora,
     });
     //ventaNueva.created_at = ventaNueva.created_at.replace(" ", ", ");//opcion solo para pc
     await ventaNueva.save();

@@ -34,10 +34,16 @@ export default function CorteCaja() {
       },
     },
     {
-      name: <h3>Fecha y hora</h3>,
-      selector: (row) => row.created_at,
+      name: <h3>Fecha</h3>,
+      selector: (row) => row.fecha,
       sortable: true,
-      cell: (row) => `${row.created_at}`,
+      cell: (row) => `${row.fecha}`,
+    },
+    {
+      name: <h3>Hora</h3>,
+      selector: (row) => row.hora,
+      sortable: true,
+      cell: (row) => `${row.hora}`,
     },
   ];
   const [data, setData] = useState([]);
@@ -139,49 +145,18 @@ export default function CorteCaja() {
       console.error(error);
     }
   };
-  const handleSearch = (searchTerm) => {
-    const filteredResults = data.filter((item) => {
-      const num_boletos = item.num_boletos ? item.num_boletos.toString() : "";
-      const nombre_ruta = item.nombre_ruta ? item.nombre_ruta.toString() : "";
-      const cambio = item.cambio ? item.cambio.toString() : "";
-      const descuento = item.descuento ? item.descuento.toString() : "";
-      const total = item.total ? item.total.toString() : "";
-      const created_at = item.created_at ? item.created_at.toString() : "";
-      return (
-        num_boletos.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        nombre_ruta.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        cambio.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        descuento.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        total.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        created_at.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    });
-    setFilteredData(filteredResults);
-  };
-  const filterDataByDate = () => {
-    const now = new Date(new Date().getTime());
-    const currentDate = now
-      .toLocaleString("es-MX", {
-        timeZone: "America/Mexico_City",
-        hour12: false,
-      })
-      .replace(/(\d+)\/(\d+)\/(\d+).*/, "$1/$2/$3");
 
-    const filteredResults = data.filter((item) =>
-      item.created_at.startsWith(currentDate)
-    ); // filtrar por fecha actual
-    setFilteredData(filteredResults);
+  const filterDataByDate = () => {
     // calcular el monto total de ganancias
-    const totalGanancias = filteredResults.reduce(
+    const totalGanancias = data.reduce(
       (total, item) => total + item.totalventa,
       0
     );
-    const totalBoletos = filteredResults.reduce(
+    const totalBoletos = data.reduce(
       (num_boletos, item) => num_boletos + parseInt(item.num_boletos),
       0
     ); // sumar la cantidad de boletos
     setTotalBoletos(totalBoletos); // guardar el total en un estado
-
     setTotalGanancias(totalGanancias);
   };
   const handleClick = () => {
