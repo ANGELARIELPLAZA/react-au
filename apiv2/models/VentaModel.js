@@ -39,9 +39,13 @@ let ventaSchema = new Schema({
     type: Number,
     required: true,
   },
-  created_at: {
+  fecha: {
     type: String,
-    required: true
+    required: true,
+  },
+  hora: {
+    type: String,
+    required: true,
   },
 });
 
