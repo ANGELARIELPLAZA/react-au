@@ -42,7 +42,7 @@ export default function CorteCaja() {
     {
       name: <h3>Hora</h3>,
       selector: (row) => row.hora,
-      sortable: true,
+      sortable: false,
       cell: (row) => `${row.hora}`,
       sortFunction: (a, b) => {
         const timeA = new Date(`10/5/2023 ${hora}`).getTime();
