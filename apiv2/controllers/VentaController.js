@@ -1,11 +1,6 @@
 "use strict";
 const Venta = require("../models/VentaModel");
 const { validarVenta } = require("../helpers/validacionVenta");
-var fechaActual = new Date();
-// Obtener solo la fecha en formato legible
-var fecha = fechaActual.toLocaleDateString();
-// Obtener solo la hora en formato legible
-var hora = fechaActual.toLocaleTimeString();
 
 const listarVentas = async (req, res) => {
   try {
@@ -18,6 +13,11 @@ const listarVentas = async (req, res) => {
 };
 const obtenerVenta = async (req, res) => {
   try {
+    var fechaActual = new Date();
+    // Obtener solo la fecha en formato legible
+    var fecha = fechaActual.toLocaleDateString();
+    // Obtener solo la hora en formato legible
+    var hora = fechaActual.toLocaleTimeString();
     const ventas = await Venta.find({ vendedor: req.params.vendedor });
     const ventasMismoDia = [];
     let ventaFecha = "";
@@ -35,7 +35,7 @@ const obtenerVenta = async (req, res) => {
       const minutosB = parseInt(horaB[0]) * 60 + parseInt(horaB[1]);
       return minutosB - minutosA;
     });
-    
+
     res.json(ventasMismoDia);
   } catch (error) {
     console.error(error);
@@ -47,6 +47,11 @@ const obtenerVenta = async (req, res) => {
 };
 const corteVentasGeneral = async (req, res) => {
   try {
+    var fechaActual = new Date();
+    // Obtener solo la fecha en formato legible
+    var fecha = fechaActual.toLocaleDateString();
+    // Obtener solo la hora en formato legible
+    var hora = fechaActual.toLocaleTimeString();
     const ventas = await Venta.find();
     const ventasMismoDia = [];
     let ventaFecha = "";
@@ -76,6 +81,11 @@ const corteVentasGeneral = async (req, res) => {
 };
 const corteVentas = async (req, res) => {
   try {
+    var fechaActual = new Date();
+    // Obtener solo la fecha en formato legible
+    var fecha = fechaActual.toLocaleDateString();
+    // Obtener solo la hora en formato legible
+    var hora = fechaActual.toLocaleTimeString();
     const ventas = await Venta.find({ vendedor: req.params.vendedor });
     // Filtrar ventas del mismo día
     const ventasMismoDia = [];
@@ -116,6 +126,11 @@ const corteVentas = async (req, res) => {
   }
 };
 const crearVenta = async (req, res, next) => {
+  var fechaActual = new Date();
+  // Obtener solo la fecha en formato legible
+  var fecha = fechaActual.toLocaleDateString();
+  // Obtener solo la hora en formato legible
+  var hora = fechaActual.toLocaleTimeString();
   let params = req.body;
   params.num_boletos = "1";
   if (
