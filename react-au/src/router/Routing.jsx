@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, BrowserRouter, Navigate, Link } from "react-router-dom";
+import { Routes, Route, BrowserRouter} from "react-router-dom";
 import { PublicLayout } from "../components/layout/public/PublicLayout.jsx";
 import { PrivateLayout } from "../components/layout/private/PrivateLayout.jsx";
 import { UserLayout } from "../components/layout/user/UserLayout.jsx";
@@ -11,7 +11,6 @@ import { AuthProvider } from "../context/AuthProvider.jsx";
 import { Logout } from "../components/Logout.jsx";
 import { RegisterBoleto } from "../components/admin/R-boleto/RegisterBoleto.jsx";
 import { Error404 } from "../components/Error404.jsx";
-import { Report } from "../components/admin/Report.jsx";
 import { ViewUser } from "../components/admin/R-user/ViewUser.jsx";
 import { ViewBoleto } from "../components/admin/R-boleto/ViewBoleto.jsx";
 import ViewRuta from "../components/admin/R-ruta/ViewRuta.jsx";
@@ -36,7 +35,6 @@ export const Routing = () => {
             <Route path="registrar-boleto" element={<RegisterBoleto />} />
             <Route path="view-boleto" element={<ViewBoleto />} />
             <Route path="logout" element={<Logout />} />
-            <Route path="reporte" element={<Report />} />
             <Route path="venta" element={<Venta />} />
             <Route path="venta-corte" element={<CorteCaja />} />
           </Route>

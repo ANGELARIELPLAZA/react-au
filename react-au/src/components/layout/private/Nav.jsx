@@ -48,13 +48,6 @@ export const Nav = () => {
             </ul>
           )}
         </li>
-
-        <li className="menu-list__item">
-          <NavLink to="/admin/reporte" className="list-end__link">
-              <i className="fa-solid fa-gear"></i>
-              <span className="list-end__name">Reporte</span>
-          </NavLink>
-        </li>
         <li className="menu-list__item">
           <NavLink to="/vendedor/" className="list-end__link">
               <i className="fa-solid fa-gear"></i>

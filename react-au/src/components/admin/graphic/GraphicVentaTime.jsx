@@ -72,14 +72,14 @@ export const GraphicVentaTime = () => {
     <div>
       <div className="container">
         <div className="row">
-          <div className="col-md-12">
+          <div className="col-md-6">
             <div className="stats-container row">
               <div className="stat col-12">
                 <div className="stat-icon">
                   <FaMoneyBillAlt />
                 </div>
                 <div className="stat-info">
-                  <div className="stat-label">Ganancias total</div>
+                  <div className="stat-label">Ganancias total en el mes</div>
                   <div className="stat-value">${ventaTotalMes}</div>
                 </div>
               </div>
@@ -92,12 +92,16 @@ export const GraphicVentaTime = () => {
                   <div className="stat-value">${ventaTotalDia}</div>
                 </div>
               </div>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="stats-container row">
               <div className="stat col-12">
                 <div className="stat-icon">
                   <FaMoneyBillAlt />
                 </div>
                 <div className="stat-info">
-                  <div className="stat-label">Turno 1:</div>
+                  <div className="stat-label">Ganancias del Turno 1:</div>
                   <div className="stat-value">${ventaTotalDiaTurno1}</div>
                 </div>
               </div>
@@ -106,7 +110,7 @@ export const GraphicVentaTime = () => {
                   <FaMoneyBillAlt />
                 </div>
                 <div className="stat-info">
-                  <div className="stat-label">Turno 2:</div>
+                  <div className="stat-label">Ganancias del Turno 2:</div>
                   <div className="stat-value">${ventaTotalDiaTurno2}</div>
                 </div>
               </div>
@@ -116,4 +120,5 @@ export const GraphicVentaTime = () => {
       </div>
     </div>
   );
+  
 };
