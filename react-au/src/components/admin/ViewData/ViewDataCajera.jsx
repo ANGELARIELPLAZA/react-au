@@ -112,7 +112,6 @@ export const ViewDataCajera = ({ datos }) => {
     <>
       <header className="content__header">
         <h1 className="content__title">Ventas por vendedora</h1>
-        <ReportExcel filteredData={filteredData} />
       </header>
       <div className="card bg-light mb-">
         <div className="card-body">
@@ -133,7 +132,7 @@ export const ViewDataCajera = ({ datos }) => {
             {selectedSeller ? (
               <h2>
                 <span>
-                  Monto total para {selectedSeller}:
+                  Monto total de {selectedSeller}:
                   <span className="badge text-bg-warning">
                     ${calculateTotalSalesBySeller(selectedSeller).totalVenta}
                   </span>
@@ -144,7 +143,7 @@ export const ViewDataCajera = ({ datos }) => {
             {/* Número total de boletos por vendedor */}
             {selectedSeller ? (
               <h2>
-                Total de boletos para {selectedSeller}:
+                Total de boletos de {selectedSeller}:
                 <span className="badge text-bg-warning">
                   {calculateTotalSalesBySeller(selectedSeller).totalBoletos}
                 </span>
