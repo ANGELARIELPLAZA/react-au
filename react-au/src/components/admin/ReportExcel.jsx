@@ -15,14 +15,16 @@ export const ReportExcel = (props) => {
             totalventa,
             descuento,
             total,
-            created_at,
+            fecha,
+            hora,
           }) => ({
             num_boletos,
             nombre_ruta,
             totalventa,
             descuento,
             total,
-            created_at,
+            fecha,
+            hora,
           })
         )}
         filename={"ventas.csv"}

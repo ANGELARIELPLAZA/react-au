@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import DataTable from "react-data-table-component";
-import { Badge } from "react-bootstrap";
 
 export const ViewDataTurno2 = ({ datos }) => {
   const datosFiltrados = datos.filter((dato) => {
