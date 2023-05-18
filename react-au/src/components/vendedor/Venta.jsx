@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { useForm } from "../../hooks/useForm";
-import Modal from "react-bootstrap/Modal";
+import React, { useState } from "react";
 import printJS from "print-js";
 import { Global } from "../../helpers/Global";
 import { operacionesFunc } from "../../utils/operaciones";
@@ -197,7 +195,7 @@ export const Venta = () => {
               </div>
               <div className="form-group  text-white text-center py-3">
                 <label>
-                 2. Número de Boletos:
+                  2. Número de Boletos:
                   <input
                     type="text"
                     name="num_boleto"
@@ -211,11 +209,8 @@ export const Venta = () => {
             <div className=" text-white text-center py-3">
               <label htmlFor="descuento">3. Tipo de descuento</label>
               <div className="text-white">
-                <div className="text-left">
-                  <br />
+                <div className="text-left  text-center">
                   <label>
-                    Opción:
-                    <br />
                     <input
                       type="radio"
                       name="opcion"
@@ -224,7 +219,7 @@ export const Venta = () => {
                       onChange={handleInputChange}
                       required
                     />
-                    Entero <br />
+               Entero
                     <input
                       type="radio"
                       name="opcion"
@@ -232,28 +227,33 @@ export const Venta = () => {
                       checked={formData.opcion === "Insen"}
                       onChange={handleInputChange}
                       required
+                      style={{ marginLeft: '40px' }} // Agrega un margen a la izquierda del radio button
+
                     />
-                    Insen <br />
+                    Insen
                     <input
                       type="radio"
                       name="opcion"
                       value="Estudiante"
                       checked={formData.opcion === "Estudiante"}
                       onChange={handleInputChange}
+                      style={{ marginLeft: '40px' }} // Agrega un margen a la izquierda del radio button
+
                       required
                     />
-                    Estudiante <br />
+                    Estudiante
                     <input
                       type="radio"
                       name="opcion"
                       value="Maestro"
                       checked={formData.opcion === "Maestro"}
                       onChange={handleInputChange}
+                      style={{ marginLeft: '40px' }} // Agrega un margen a la izquierda del radio button
+
                       required
                     />
                     Maestro
                   </label>
-                  <br />
                 </div>
                 <br />
               </div>
