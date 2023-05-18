@@ -33,7 +33,7 @@ export const HomeUsuarios = () => {
 
     const intervalo = setInterval(() => {
       obtenerDatos();
-    }, 1000);
+    }, 20000);
 
     return () => clearInterval(intervalo);
   }, []);
@@ -45,7 +45,7 @@ export const HomeUsuarios = () => {
       const day = date.getDate().toString().padStart(2, "0");
       const formattedDateTime = `${day}/${month}/${year}`;
       setDateTime(formattedDateTime);
-    }, 1000);
+    });
     return () => {
       clearInterval(intervalId);
     };

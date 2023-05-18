@@ -1,158 +1,97 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "../../hooks/useForm";
 import Modal from "react-bootstrap/Modal";
-import ViewRuta from "./ViewRuta";
 import printJS from "print-js";
 import { Global } from "../../helpers/Global";
 import { operacionesFunc } from "../../utils/operaciones";
-import QRCode from "qrcode.react";
-import QRCode2 from 'qrcode-generator';
-
+import QRCode2 from "qrcode-generator";
 import CryptoJS from "crypto-js";
-let boletosArray = []; // declarar el array vacío
 import { NavLink } from "react-router-dom";
 
+const token = localStorage.getItem("token");
+const caja = localStorage.getItem("caja");
+const user = localStorage.getItem("user");
+const parsedUser = JSON.parse(user);
+let newBoletosArray = [];
+
+// Clave secreta para la encriptación
+const secretKey = "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";
+
+// Función para encriptar una cadena de texto con una clave secreta
+const encrypt = (text, secretKey) => {
+  return CryptoJS.AES.encrypt(text, secretKey).toString();
+};
+
+// Función para generar el código QR utilizando la librería qrcode-generator
+const generateQRCode = (data) => {
+  const qr = QRCode2(0, "L");
+  qr.addData(data);
+  qr.make();
+  return qr.createDataURL();
+};
+
 export const Venta = () => {
-  const { form, changed } = useForm({});
-  const [saved, setSaved] = useState("not send");
-  const [showModal, setShowModal] = useState(false);
-  const [contrasenaCorrecta, setContrasenaCorrecta] = useState(false);
-  const [password, setPassword] = useState("");
-  const [opciones, setOpciones] = useState([]);
-  const [ticket, setTicket] = useState(null);
-  const [dateTime, setDateTime] = useState("");
-  const [contador, setContador] = useState(1);
-  const [enviado, setEnviado] = useState(false);
+  const [formData, setFormData] = useState({
+    code: "",
+    num_boleto: "",
+    opcion: "",
+  });
   const [enviadoform, setEnviadoform] = useState(false);
-
-  function suma() {
-    setContador(contador + 1);
-    document.getElementById("num_boletos").value = contador;
-    form.num_boletos = contador;
-  }
-
-  function resta() {
-    if (contador > 0) {
-      setContador(contador - 1);
-      document.getElementById("num_boletos").value = contador;
-      form.num_boletos = contador;
-    }
-  }
-
-  function handleChanged() {
-    setContador(parseInt(document.getElementById("num_boletos").value));
-  }
-
-  const token = localStorage.getItem("token");
-  const caja = localStorage.getItem("caja");
-  const user = localStorage.getItem("user");
-  const parsedUser = JSON.parse(user);
-  let newBoleto = form;
-  let rutas = [];
-  let folio = [];
+  const [saved, setSaved] = useState("not send");
   const numVenta = Math.round(Math.random() * 9999999999999) + 9999999999999;
-  const numVentaJson = JSON.stringify(numVenta);
-  let ventaEncriptada;
-  // Clave secreta para la encriptación
-  const secretKey = "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";
-  // Función para encriptar una cadena de texto con una clave secreta
-  const encrypt = (text, secretKey) => {
-    return CryptoJS.AES.encrypt(text, secretKey).toString();
-  };
+  const numVentaString = numVenta.toString();
 
-  const saveBoleto = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setEnviadoform(true);
-    try {
-      const response = await fetch(Global.url + "rutas/list", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-      });
+    resetForm();
+    // Create a variable to store all tickets
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString();
+    const day = date.getDate().toString().padStart(2, "0");
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    const seconds = date.getSeconds().toString().padStart(2, "0");
 
-      const data = await response.json();
-      newBoleto = form;
-      if (
-        typeof newBoleto.descuento === "string" &&
-        newBoleto.descuento.includes(",")
-      ) {
-        let [descuento, nombre_boleto] = newBoleto.descuento.split(",");
-        newBoleto.descuento = parseInt(descuento);
-        form.nombre_boleto = nombre_boleto;
-      }
+    formData.fecha = `${day}/${month}/${year}`;
+    formData.hora = `${hours}:${minutes}:${seconds}`;
+    formData.code = parseInt(formData.code);
+    formData.num_boleto = parseInt(formData.num_boleto);
+    formData.vendedor = parsedUser.name;
+    formData.caja = parseInt(caja);
+    let value = formData.num_boleto;
 
-      // Encripta la venta generada
-      newBoleto.vendedor = parsedUser.name;
-      let newBoleto2 = [];
-      let value = parseInt(newBoleto.num_boletos);
-      for (let i = 0; i < value; i++) {
-        let token2 = encrypt(numVentaJson, secretKey);
-        newBoleto2.destino_code = newBoleto.destino_code;
-        newBoleto2.num_boletos = newBoleto.num_boletos;
-        newBoleto2.descuento = newBoleto.descuento;
-        newBoleto2.token = token2;
-        newBoleto2.vendedor = newBoleto.vendedor;
-        // operaciones.js
-        newBoleto = operacionesFunc(newBoleto2, data);
-        boletosArray.push(newBoleto); // agregar el objeto actual al array
-      }
-      form.nombre_ruta = newBoleto.nombre_ruta;
-      form.totalventamodel = newBoleto.totalventamodel;
-      form.total = newBoleto.totalventa;
-
-      // Validación de los campos
-      if (newBoleto.destino_code > 0 && newBoleto.num_boletos > 0) {
-        setShowModal(true);
-      }
-    } catch (error) {
-      console.error("Error al obtener los descuentos:", error);
+    for (let i = 0; i < value; i++) {
+      let token2 = encrypt(numVentaString, secretKey);
+      formData.token = token2;
+      const newBoleto = operacionesFunc(formData);
+      newBoletosArray.push(newBoleto);
     }
+    handlePrintClick(newBoletosArray); // Pasa newBoletosArray a handlePrintClick
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(Global.url + "descuentos/list", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token,
-          },
-        });
-        const data = await response.json();
-        rutas = data;
-        setOpciones(data);
-      } catch (error) {
-        console.error("Error al obtener los descuentos:", error);
-      }
-    };
-    fetchData();
-  }, []);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      const date = new Date();
-      const year = date.getFullYear();
-      const month = (date.getMonth() + 1).toString().padStart(2, "0");
-      const day = date.getDate().toString().padStart(2, "0");
-      const hours = date.getHours().toString().padStart(2, "0");
-      const minutes = date.getMinutes().toString().padStart(2, "0");
-      const seconds = date.getSeconds().toString().padStart(2, "0");
-      const formattedDateTime = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
-      setDateTime(formattedDateTime);
-    }, 1000);
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, []);
+  const resetForm = () => {
+    setFormData({
+      code: "",
+      num_boleto: "",
+      opcion: "",
+    });
+  };
 
-  const handleClick = () => {
+  const handleClick = (newBoletosArray) => {
     // Create a variable to store all tickets
     let tickets = "";
+    let value = formData.num_boleto;
     // Create a page for each ticket
-    for (let i = 0; i < form.num_boletos; i++) {
+    for (let i = 0; i < value; i++) {
       // Create the content of the ticket
       const ticketContent = `
       <div style="font-family: Arial; font-weight: bold; width: 50mm;">
@@ -163,51 +102,42 @@ export const Venta = () => {
           <td style="border: 2px solid black;">Descuento</td>
         </tr>
         <tr style="border: 2px solid black;">
-          <td style="border: 2px solid black;">${newBoleto.nombre_ruta}</td>
-          <td style="border: 2px solid black;">${form.nombre_boleto}</td>
+          <td style="border: 2px solid black;">${newBoletosArray[0].destino}</td>
+          <td style="border: 2px solid black;">${newBoletosArray[0].opcion}</td>
         </tr>
       </table>
     </div>
     <div style="font-family: Arial; font-size: 1.2rem; line-height: 1.5;">
-      <h4 style="line-height: 0.1;"><span>Total:</span><span>$${form.total}</span></h4>
-      <h4 style="line-height: 0.1;"><span>Vendedor:</span><span>${form.vendedor}</span></h4>
-      <h4 style="line-height: 0.1;"><span>Caja:</span><span>${caja}</span></h4>
-      <h4 style="line-height: 1;"><span>${dateTime}</span></h4>
+      <h4 style="line-height: 0.1;"><span>Total:</span><span>$${newBoletosArray[0].totalventa}</span></h4>
+      <h4 style="line-height: 0.1;"><span>Vendedor:</span><span>${newBoletosArray[0].vendedor}</span></h4>
+      <h4 style="line-height: 0.1;"><span>Caja:</span><span>${newBoletosArray[0].caja}</span></h4>
+      <h4 style="line-height: 0.1;"><span></span><span>${newBoletosArray[0].fecha}${newBoletosArray[0].hora}</span></h4>
     </div>
-    
       `;
 
       // Append the ticket content to the tickets variable
       tickets += ticketContent;
       const qrCode = `
       <div>
-      <img src="${generateQRCode(boletosArray[i].token)}" width="200" height="200" />
-      </div>
-      <div style="page-break-after: always;"></div>
+      <img src="${generateQRCode(
+        newBoletosArray[i].token
+      )}" width="200" height="200" />
+    </div>
+    <div style="page-break-after: always;"></div>
     `;
-    
-    // Función para generar el código QR utilizando la librería qrcode-generator
-    function generateQRCode(data) {
-      const qr = QRCode2(0, 'L');
-      qr.addData(data);
-      qr.make();
-      return qr.createDataURL();
-    }
+
       tickets += qrCode;
     }
 
     // Define a function to print the tickets before each page break
     const printBeforePageBreak = (pageNumber) => {
       if (pageNumber > 1) {
-        for (let i = 0; i < form.num_boletos; i++) {
+        for (let i = 0; i < value; i++) {
           window.print();
           // Wait for 1 second before continuing to print the next ticket
           setTimeout(() => {}, 10);
         }
       }
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
     };
 
     // Print all tickets
@@ -219,231 +149,148 @@ export const Venta = () => {
       onPrintDialogClose: printBeforePageBreak,
     });
   };
-  const handlePrintClick = async () => {
-    setEnviado(true);
-    handleClick();
 
-    let value = boletosArray.length;
+  const handlePrintClick = async (newBoletosArray) => {
+    let value = formData.num_boleto;
+    handleClick(newBoletosArray);
 
     for (let i = 0; i < value; i++) {
       // Remove unwanted fields from the object
-      delete boletosArray[i].totalventamodel;
-      delete boletosArray[i].num_boletos_model;
-      boletosArray[i].caja = caja;
-      // Realizar petición de creación de venta
-      try {
-        const request = await fetch(Global.url + "ventas/creat", {
-          method: "POST",
-          body: JSON.stringify(boletosArray[i]),
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token,
-          },
-        });
-        const data = await request.json();
-      } catch (error) {
-        console.error(error);
-      }
+      delete newBoletosArray[i].totalventamodel;
+      delete newBoletosArray[i].num_boletos_model;
+    }
+    try {
+      const request = await fetch(Global.url + "ventas/creat", {
+        method: "POST",
+        body: JSON.stringify(newBoletosArray),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      });
+      const data = await request.json();
+      setTimeout(() => {
+        window.location.reload();
+      });
+    } catch (error) {
+      console.error(error);
     }
   };
 
   return (
     <div className="venta">
       <div className="row">
-        <div className="col-md-6">
-          <ViewRuta />
-        </div>
-        <div className="col-md-6">
-          <form className="register-form" onSubmit={saveBoleto}>
+        <div className="col-md-12">
+          <form className="register-form" onSubmit={handleSubmit}>
             <div className="row d-flex form-group">
               <div className="form-group  text-white text-center py-3">
-                <label htmlFor="destino_code">1. Destino</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  name="destino_code" // add the name attribute
-                  placeholder="Ingrese el codigo de destino"
-                  style={{ fontSize: "2rem" }}
-                  onChange={changed}
-                  required
-                />
+                <label>
+                  1. Codigo de destino:
+                  <input
+                    type="text"
+                    name="code"
+                    value={formData.code}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </label>
               </div>
               <div className="form-group  text-white text-center py-3">
-                <label htmlFor="num_boletos">2. Numero de boletos</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  name="num_boletos"
-                  id="num_boletos"
-                  placeholder="Ingrese el número de boletos"
-                  style={{ fontSize: "2rem" }}
-                  onChange={changed}
-                  required
-                />
-                <div className="col-md-12">
-                  <button
-                    onClick={suma}
-                    style={{ marginRight: "0px", width: "49%" }}
-                  >
-                    +
-                  </button>
-                  <button
-                    onClick={resta}
-                    style={{ marginLeft: "14px", width: "48%" }}
-                  >
-                    -
-                  </button>
-                </div>
+                <label>
+                 2. Número de Boletos:
+                  <input
+                    type="text"
+                    name="num_boleto"
+                    value={formData.num_boleto}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </label>
               </div>
             </div>
             <div className=" text-white text-center py-3">
               <label htmlFor="descuento">3. Tipo de descuento</label>
-
               <div className="text-white">
                 <div className="text-left">
-                  {opciones.map((opcion) => (
-                    <div key={opcion.code}>
-                      <h1>
-                        <input
-                          type="radio"
-                          name="descuento"
-                          value={`${opcion.descuento},${opcion.nombre_boleto}`}
-                          onChange={changed}
-                          required
-                        />
-                        {opcion.nombre_boleto}
-                        {opcion.descuento !== 1
-                          ? ` - %${opcion.descuento}`
-                          : ""}
-                      </h1>
-                    </div>
-                  ))}
+                  <br />
+                  <label>
+                    Opción:
+                    <br />
+                    <input
+                      type="radio"
+                      name="opcion"
+                      value="Entero"
+                      checked={formData.opcion === "Entero"}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    Entero <br />
+                    <input
+                      type="radio"
+                      name="opcion"
+                      value="Insen"
+                      checked={formData.opcion === "Insen"}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    Insen <br />
+                    <input
+                      type="radio"
+                      name="opcion"
+                      value="Estudiante"
+                      checked={formData.opcion === "Estudiante"}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    Estudiante <br />
+                    <input
+                      type="radio"
+                      name="opcion"
+                      value="Maestro"
+                      checked={formData.opcion === "Maestro"}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    Maestro
+                  </label>
+                  <br />
                 </div>
                 <br />
               </div>
-            </div>
-            <div className="row form-group">
-              <div
-                className=" text-white text-center py-3"
-                style={{ width: "95%" }}
-              >
-                <input
-                  type="submit"
-                  value="Hacer venta"
-                  disabled={enviadoform}
-                  className="btn btn-success"
-                  style={{ fontSize: "3.6rem" }}
-                />
-                <button
-                  className="btn btn-warning"
-                  style={{ fontSize: "3.6rem" }}
-                  onClick={() => window.location.reload()}
+              <div className="row form-group">
+                <div
+                  className=" text-white text-center py-3"
+                  style={{ width: "95%" }}
                 >
-                  Limpiar Venta
-                </button>
-                <NavLink to="/vendedor/venta-corte">
-                  <button
-                    className="btn btn-info"
+                  <input
+                    type="submit"
+                    value="Hacer venta"
+                    className="btn btn-success"
+                    onClick={() => handleClick()}
                     style={{ fontSize: "3.6rem" }}
+                  />
+                  <button
+                    className="btn btn-warning"
+                    style={{ fontSize: "3.6rem" }}
+                    onClick={() => window.location.reload()}
                   >
-                    Corte de caja
+                    Limpiar Venta
                   </button>
-                </NavLink>
+                  <NavLink to="/vendedor/venta-corte">
+                    <button
+                      className="btn btn-info"
+                      style={{ fontSize: "3.6rem" }}
+                    >
+                      Corte de caja
+                    </button>
+                  </NavLink>
+                </div>
               </div>
             </div>
           </form>
+          <div id="print"></div>
         </div>
       </div>
-      <Modal show={showModal} className="modal-lg display-6">
-        <Modal.Header closeButton>
-          <Modal.Title>Detalles de la venta</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {saved && (
-            <div
-              style={{
-                display: "grid",
-                gridTemplateRows: "repeat(3, 50px)",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "10px",
-              }}
-            >
-              <p>
-                Destino:{" "}
-                <span className="badge text-bg-secondary display-6">
-                  <strong></strong>
-                  {newBoleto.nombre_ruta}
-                </span>
-              </p>
-              <p>
-                Número de boletos:{" "}
-                <span className="badge text-bg-secondary">
-                  {form.num_boletos}
-                </span>
-              </p>
-              <p>
-                Fecha: <span className="badge text-black ">{dateTime}</span>
-              </p>
-              <p>
-                Total:{" "}
-                <span className="badge text-bg-danger">
-                  ${newBoleto.totalventamodel}
-                </span>
-              </p>
-              <br />
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gridColumn: "1/3",
-                }}
-              >
-                <div style={{ display: "flex", flexWrap: "wrap" }}>
-                  {boletosArray.map((boleto, index) => {
-                    return (
-                      <div key={index}>
-                        <QRCode
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            margin: "8px",
-                          }}
-                          value={boleto.token}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-                <div id="print"></div>
-              </div>
-
-              <p style={{ gridColumn: "1/3" }}>
-                *Descuento al boleto de manera individual: %{form.descuento}
-              </p>
-            </div>
-          )}
-        </Modal.Body>
-
-        <Modal.Footer>
-          <button
-            className="btn btn-warning"
-            style={{ fontSize: "1.6rem" }}
-            onClick={() => window.location.reload()}
-          >
-            Limpiar Venta
-          </button>
-          <button
-            id="imprimirBtn"
-            className="btn btn-success"
-            style={{ fontSize: "1.6rem" }}
-            disabled={enviado}
-            onClick={() => handlePrintClick(password)}
-          >
-            Imprimir
-          </button>
-        </Modal.Footer>
-      </Modal>
     </div>
   );
 };

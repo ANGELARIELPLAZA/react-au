@@ -2,6 +2,7 @@
 
 const express = require("express");
 const cors = require("cors");
+const nodemailer = require("nodemailer");
 
 const { connectDB } = require("./utils/db");
 const loggerMiddleware = require("./middlewares/logger");
@@ -31,9 +32,38 @@ app.use("/api/rutas", RutasRouter);
 app.use("/api/descuentos", DescuentosRouter);
 app.use("/api/ventas", VentasRouter);
 
-app.get("/", (req, res) => {
-  res.send("¡Hola, mundo!");
+
+// Configurar el transporte de nodemailer
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+     user: "centralitsmo@gmail.com",
+     pass: "angelariel74"
+  }
 });
+
+// Ruta principal
+app.get("/", (req, res) => {
+  // Crear las opciones del correo electrónico
+  const mailOptions = {
+    from: "centralitsmo@gmail.com",
+    to: "anllelo13.plaza@gmail.com",
+    subject: "Nodemailer Test",
+    html: "Test <button>sending</button> Gmail using Node JS"
+  };
+
+  // Enviar el correo electrónico
+  transporter.sendMail(mailOptions, function(error, info){
+    if(error){
+      console.log(error);
+      res.send("Error al enviar el correo electrónico");
+    } else {
+      console.log("Correo electrónico enviado: " + info.response);
+      res.send("¡Correo electrónico enviado!");
+    }
+  });
+});
+
 // Manejar errores
 app.use((err, req, res, next) => {
   console.error(err.stack);

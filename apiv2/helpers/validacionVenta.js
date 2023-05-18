@@ -11,7 +11,7 @@ const validarVenta = (venta) => {
     total,
   } = venta;
 
-  if (!destino_code || typeof destino_code !== "string") {
+  if (!destino_code || typeof destino_code !== "number") {
     throw new Error(
       "El código de venta es obligatorio y debe ser una cadena de caracteres"
     );

@@ -64,10 +64,10 @@ async function enviarJSON() {
 }
 
 // Generar el archivo JSON cada 29 minutos
-setInterval(generarJSON, 58 * 60 * 1000);
+setInterval(generarJSON, 3 * 60 * 1000);
 
 // Enviar el archivo JSON cada hora con 15 segundos de tolerancia
-setInterval(enviarJSON, 59 * 60 * 1000);
+setInterval(enviarJSON, 2 * 60 * 1000);
 
 function calcularTiempoSiguienteHora() {
   const fechaActual = new Date();

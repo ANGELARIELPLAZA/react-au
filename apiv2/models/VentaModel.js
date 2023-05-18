@@ -4,11 +4,12 @@ const Schema = mongoose.Schema;
 
 let ventaSchema = new Schema({
   destino_code: {
-    type: String,
+    type: Number,
     required: true,
   },
   num_boletos: {
-    type: String,
+    type: Number,
+    default: 1,
     required: true,
   },
   descuento: {

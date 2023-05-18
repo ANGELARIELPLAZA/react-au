@@ -110,7 +110,7 @@ export default function CorteCaja() {
         { field: "nombre_ruta", displayName: "RUTA" },
         { field: "total_boletos", displayName: "BOLETOS" },
       ],
-      type: "json",
+      type: "json", 
       header: ticketContent,
     });
   };
