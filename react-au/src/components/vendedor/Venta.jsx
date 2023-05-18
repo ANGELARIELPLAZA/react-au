@@ -88,6 +88,12 @@ export const Venta = () => {
     // Create a variable to store all tickets
     let tickets = "";
     let value = formData.num_boleto;
+    if (value <= 0) {
+      alert("INGRESE CORRECTAMENTE LA CANTIDAD DE BOELTOS");
+      setTimeout(() => {
+        window.location.reload();
+      });
+    }
     // Create a page for each ticket
     for (let i = 0; i < value; i++) {
       // Create the content of the ticket
@@ -150,28 +156,35 @@ export const Venta = () => {
 
   const handlePrintClick = async (newBoletosArray) => {
     let value = formData.num_boleto;
-    handleClick(newBoletosArray);
+    let valuecode = newBoletosArray[0].destino 
+    if (value <= 0 || typeof value === 'undefined' || typeof valuecode === 'undefined'){
+      newBoletosArray=[]
+      alert("ERROR VENTA NO DADA DE ALTA, VERIFICA EL CODIGO DE RUTA O LA CANTIDAD DE BOLETOS");
+      return  window.location.reload();
+    }else{
+      handleClick(newBoletosArray);
 
-    for (let i = 0; i < value; i++) {
-      // Remove unwanted fields from the object
-      delete newBoletosArray[i].totalventamodel;
-      delete newBoletosArray[i].num_boletos_model;
-    }
-    try {
-      const request = await fetch(Global.url + "ventas/creat", {
-        method: "POST",
-        body: JSON.stringify(newBoletosArray),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-      });
-      const data = await request.json();
-      setTimeout(() => {
-        window.location.reload();
-      });
-    } catch (error) {
-      console.error(error);
+      for (let i = 0; i < value; i++) {
+        // Remove unwanted fields from the object
+        delete newBoletosArray[i].totalventamodel;
+        delete newBoletosArray[i].num_boletos_model;
+      }
+      try {
+        const request = await fetch(Global.url + "ventas/creat", {
+          method: "POST",
+          body: JSON.stringify(newBoletosArray),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+        });
+        const data = await request.json();
+        setTimeout(() => {
+          window.location.reload();
+        });
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
@@ -219,7 +232,7 @@ export const Venta = () => {
                       onChange={handleInputChange}
                       required
                     />
-               Entero
+                    Entero
                     <input
                       type="radio"
                       name="opcion"
@@ -227,8 +240,7 @@ export const Venta = () => {
                       checked={formData.opcion === "Insen"}
                       onChange={handleInputChange}
                       required
-                      style={{ marginLeft: '40px' }} // Agrega un margen a la izquierda del radio button
-
+                      style={{ marginLeft: "40px" }} // Agrega un margen a la izquierda del radio button
                     />
                     Insen
                     <input
@@ -237,8 +249,7 @@ export const Venta = () => {
                       value="Estudiante"
                       checked={formData.opcion === "Estudiante"}
                       onChange={handleInputChange}
-                      style={{ marginLeft: '40px' }} // Agrega un margen a la izquierda del radio button
-
+                      style={{ marginLeft: "40px" }} // Agrega un margen a la izquierda del radio button
                       required
                     />
                     Estudiante
@@ -248,8 +259,7 @@ export const Venta = () => {
                       value="Maestro"
                       checked={formData.opcion === "Maestro"}
                       onChange={handleInputChange}
-                      style={{ marginLeft: '40px' }} // Agrega un margen a la izquierda del radio button
-
+                      style={{ marginLeft: "40px" }} // Agrega un margen a la izquierda del radio button
                       required
                     />
                     Maestro
@@ -266,7 +276,7 @@ export const Venta = () => {
                     type="submit"
                     value="Hacer venta"
                     className="btn btn-success"
-                    onClick={() => handleClick()}
+                    onClick={() => handlePrintClick()}
                     style={{ fontSize: "3.6rem" }}
                   />
                   <button
