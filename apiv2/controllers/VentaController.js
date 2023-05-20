@@ -14,8 +14,11 @@ const listarVentas = async (req, res) => {
 const obtenerVenta = async (req, res) => {
   try {
     var fechaActual = new Date();
-    // Obtener solo la fecha en formato legible
-    var fecha = fechaActual.toLocaleDateString();
+    var dia = fechaActual.getDate();
+    var mes = fechaActual.getMonth() + 1; // Los meses comienzan desde 0, por lo que se suma 1
+    var anio = fechaActual.getFullYear();
+    // Formatear la fecha en el formato deseado
+    var fecha = dia + "/" + mes + "/" + anio;
     const ventas = await Venta.find({ vendedor: req.params.vendedor });
     const ventasMismoDia = [];
     let ventaFecha = "";
@@ -47,9 +50,11 @@ const obtenerVenta = async (req, res) => {
 const corteVentasGeneral = async (req, res) => {
   try {
     var fechaActual = new Date();
-    // Obtener solo la fecha en formato legible
-    var fecha = fechaActual.toLocaleDateString();
-
+    var dia = fechaActual.getDate()-1;
+    var mes = fechaActual.getMonth() + 1; // Los meses comienzan desde 0, por lo que se suma 1
+    var anio = fechaActual.getFullYear();
+    // Formatear la fecha en el formato deseado
+    var fecha = dia + "/" + mes + "/" + anio;
     const ventas = await Venta.find();
     const ventasMismoDia = [];
     let ventaFecha = "";
@@ -80,9 +85,12 @@ const corteVentasGeneral = async (req, res) => {
 const corteVentas = async (req, res) => {
   try {
     var fechaActual = new Date();
+    var dia = fechaActual.getDate();
+    var mes = fechaActual.getMonth() + 1; // Los meses comienzan desde 0, por lo que se suma 1
+    var anio = fechaActual.getFullYear();
+    // Formatear la fecha en el formato deseado
+    var fecha = dia + "/" + mes + "/" + anio;
     // Obtener solo la fecha en formato legible
-    var fecha = fechaActual.toLocaleDateString();
-   
     const ventas = await Venta.find({ vendedor: req.params.vendedor });
     // Filtrar ventas del mismo día
     const ventasMismoDia = [];
@@ -112,7 +120,6 @@ const corteVentas = async (req, res) => {
         total_boletos: ventasPorRuta[nombre_ruta],
       });
     }
-
     res.json(resultadoFinal);
   } catch (error) {
     console.error(error);
