@@ -5,7 +5,7 @@ import { operacionesFunc } from "../../utils/operaciones";
 import QRCode2 from "qrcode-generator";
 import CryptoJS from "crypto-js";
 import { NavLink } from "react-router-dom";
-
+import ViewRuta from "./ViewRuta";
 const token = localStorage.getItem("token");
 const caja = localStorage.getItem("caja");
 const user = localStorage.getItem("user");
@@ -98,8 +98,8 @@ export const Venta = () => {
     for (let i = 0; i < value; i++) {
       // Create the content of the ticket
       const ticketContent = `
-      <div style="font-family: Arial; font-weight: bold; width: 50mm;">
-      <h3 style="margin: 0; font-size: 3rem; line-height: 1.5;">VENTA</h3>
+      <div style="font-family: Arial; font-size: 1.1rem; font-weight: bold; width: 50mm;">
+      <h3 style="margin: 0; font-size: 3rem; line-height: 1.5;">BOLETO</h3>
       <table style="border-collapse: collapse;collapse; width: 50mm;">
         <tr style="border: 2px solid black;">
           <td style="border: 2px solid black;">Destino</td>
@@ -111,7 +111,7 @@ export const Venta = () => {
         </tr>
       </table>
     </div>
-    <div style="font-family: Arial; font-size: 1.2rem; line-height: 1.5;">
+    <div style="font-family: Arial; font-size: 2rem; line-height: 1.5;">
       <h4 style="line-height: 0.1;"><span>Total:</span><span>$${newBoletosArray[0].totalventa}</span></h4>
       <h4 style="line-height: 0.1;"><span>Vendedor:</span><span>${newBoletosArray[0].vendedor}</span></h4>
       <h4 style="line-height: 0.1;"><span>Caja:</span><span>${newBoletosArray[0].caja}</span></h4>
@@ -156,34 +156,51 @@ export const Venta = () => {
 
   const handlePrintClick = async (newBoletosArray) => {
     let value = formData.num_boleto;
-    let valuecode = newBoletosArray[0].destino 
-    if (value <= 0 || typeof value === 'undefined' || typeof valuecode === 'undefined'){
-      newBoletosArray=[]
-      alert("ERROR VENTA NO DADA DE ALTA, VERIFICA EL CODIGO DE RUTA O LA CANTIDAD DE BOLETOS");
-      return  window.location.reload();
-    }else{
-      handleClick(newBoletosArray);
-
-      for (let i = 0; i < value; i++) {
-        // Remove unwanted fields from the object
-        delete newBoletosArray[i].totalventamodel;
-        delete newBoletosArray[i].num_boletos_model;
-      }
-      try {
-        const request = await fetch(Global.url + "ventas/creat", {
-          method: "POST",
-          body: JSON.stringify(newBoletosArray),
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token,
-          },
-        });
-        const data = await request.json();
-        setTimeout(() => {
-          window.location.reload();
-        });
-      } catch (error) {
-        console.error(error);
+    let valuecode = newBoletosArray[0].destino;
+    if (
+      value <= 0 ||
+      typeof value === "undefined" ||
+      typeof valuecode === "undefined"
+    ) {
+      newBoletosArray = [];
+      confirm(
+        "ERROR VENTA NO DADA DE ALTA, VERIFICA EL CODIGO DE RUTA O LA CANTIDAD DE BOLETOS"
+      );
+      return window.location.reload();
+    } else {
+      let cambio = confirm(
+        "Esta es la ruta: " +
+          newBoletosArray[0].destino +
+          " Boletos:" +
+          newBoletosArray[0].num_boleto +
+          "Total: " +
+          newBoletosArray[0].totalventa
+      );
+      if (cambio == true) {
+        handleClick(newBoletosArray);
+        for (let i = 0; i < value; i++) {
+          // Remove unwanted fields from the object
+          delete newBoletosArray[i].totalventamodel;
+          delete newBoletosArray[i].num_boletos_model;
+        }
+        try {
+          const request = await fetch(Global.url + "ventas/creat", {
+            method: "POST",
+            body: JSON.stringify(newBoletosArray),
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: token,
+            },
+          });
+          const data = await request.json();
+          setTimeout(() => {
+            window.location.reload();
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        window.location.reload();
       }
     }
   };
@@ -191,7 +208,7 @@ export const Venta = () => {
   return (
     <div className="venta">
       <div className="row">
-        <div className="col-md-12">
+        <div className="col-md-6">
           <form className="register-form" onSubmit={handleSubmit}>
             <div className="row d-flex form-group">
               <div className="form-group  text-white text-center py-3">
@@ -299,6 +316,9 @@ export const Venta = () => {
             </div>
           </form>
           <div id="print"></div>
+        </div>
+        <div className="col-md-6">
+          <ViewRuta />
         </div>
       </div>
     </div>
