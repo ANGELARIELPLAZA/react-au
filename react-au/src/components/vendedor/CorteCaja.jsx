@@ -44,9 +44,8 @@ export default function CorteCaja() {
       selector: (row) => row.hora,
       sortable: true,
     },
-    
   ];
-  
+
   const [data, setData] = useState([]);
   const [data2, setData2] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -110,7 +109,7 @@ export default function CorteCaja() {
         { field: "nombre_ruta", displayName: "RUTA" },
         { field: "total_boletos", displayName: "BOLETOS" },
       ],
-      type: "json", 
+      type: "json",
       header: ticketContent,
     });
   };
@@ -125,24 +124,45 @@ export default function CorteCaja() {
         },
       });
       const data = await response.json();
-      console.log(data)
-      setData(data);
-      setFilteredData(data);
+
+      const turnoActual = new Date().getHours(); // Obtener la hora actual del sistema
+      let newData;
+      if (turnoActual >= 5 && turnoActual < 14) {
+        newData = data.ventasPrimerTurno; // Usar array del primer turno
+      } else if (turnoActual >= 14 && turnoActual <= 23) {
+        newData = data.ventasSegundoTurno; // Usar array del segundo turno
+      } else {
+        newData = []; // Fuera del rango de horarios, no hay datos disponibles
+      }
+
+      setData(newData);
+      setFilteredData(newData);
     } catch (error) {
       console.error(error);
     }
   };
   const fetchData2 = async () => {
     try {
-      const response2 = await fetch(Global.url + `ventas/corte/${vendedor}`, {
+      const response = await fetch(Global.url + `ventas/corte/${vendedor}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: token,
         },
       });
-      const data2 = await response2.json();
-      setData2(data2);
+      const data = await response.json();
+      const turnoActual = new Date().getHours(); // Obtener la hora actual del sistema
+
+      let newData;
+      if (turnoActual >= 5 && turnoActual < 14) {
+        newData = data.resultadoFinalTurno1; // Usar array del primer turno
+      } else if (turnoActual >= 14 && turnoActual <= 23) {
+        newData = data.resultadoFinalTurno2; // Usar array del segundo turno
+      } else {
+        newData = []; // Fuera del rango de horarios, no hay datos disponibles
+      }
+
+      setData2(newData);
     } catch (error) {
       console.error(error);
     }
@@ -154,13 +174,15 @@ export default function CorteCaja() {
       (total, item) => total + item.totalventa,
       0
     );
-    const totalBoletos = data.reduce(
+    const totalBoletos = filteredData.reduce(
       (num_boletos, item) => num_boletos + parseInt(item.num_boletos),
       0
-    ); // sumar la cantidad de boletos
-    setTotalBoletos(totalBoletos); // guardar el total en un estado
+    );
+
+    setTotalBoletos(totalBoletos);
     setTotalGanancias(totalGanancias);
   };
+
   const handleClick = () => {
     // Print all tickets
     printJS({

@@ -156,52 +156,35 @@ export const Venta = () => {
 
   const handlePrintClick = async (newBoletosArray) => {
     let value = formData.num_boleto;
-    let valuecode = newBoletosArray[0].destino;
-    if (
-      value <= 0 ||
-      typeof value === "undefined" ||
-      typeof valuecode === "undefined"
-    ) {
-      newBoletosArray = [];
-      confirm(
-        "ERROR VENTA NO DADA DE ALTA, VERIFICA EL CODIGO DE RUTA O LA CANTIDAD DE BOLETOS"
-      );
-      return window.location.reload();
-    } else {
-      let cambio = confirm(
-        "Esta es la ruta: " +
-          newBoletosArray[0].destino +
-          " Boletos:" +
-          newBoletosArray[0].num_boleto +
-          "Total: " +
-          newBoletosArray[0].totalventa
-      );
-      if (cambio == true) {
-        handleClick(newBoletosArray);
-        for (let i = 0; i < value; i++) {
-          // Remove unwanted fields from the object
-          delete newBoletosArray[i].totalventamodel;
-          delete newBoletosArray[i].num_boletos_model;
-        }
-        try {
-          const request = await fetch(Global.url + "ventas/creat", {
-            method: "POST",
-            body: JSON.stringify(newBoletosArray),
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: token,
-            },
-          });
-          const data = await request.json();
-          setTimeout(() => {
-            window.location.reload();
-          });
-        } catch (error) {
-          console.error(error);
-        }
-      } else {
+    let cambio = alert(
+      "Esta es la ruta: " +
+        newBoletosArray[0].destino +
+        " Boletos:" +
+        newBoletosArray[0].num_boleto +
+        "Total: " +
+        newBoletosArray[0].totalventa
+    );
+    handleClick(newBoletosArray);
+    for (let i = 0; i < value; i++) {
+      // Remove unwanted fields from the object
+      delete newBoletosArray[i].totalventamodel;
+      delete newBoletosArray[i].num_boletos_model;
+    }
+    try {
+      const request = await fetch(Global.url + "ventas/creat", {
+        method: "POST",
+        body: JSON.stringify(newBoletosArray),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      });
+      const data = await request.json();
+      setTimeout(() => {
         window.location.reload();
-      }
+      });
+    } catch (error) {
+      console.error(error);
     }
   };
 

@@ -1,6 +1,6 @@
 "use strict";
 const Venta = require("../models/VentaModel");
-const { validarVenta } = require("../helpers/validacionVenta");
+const moment = require("moment");
 
 const listarVentas = async (req, res) => {
   try {
@@ -13,32 +13,48 @@ const listarVentas = async (req, res) => {
 };
 const obtenerVenta = async (req, res) => {
   try {
-    var fechaActual = new Date();
-    var dia = fechaActual.getDate();
-    var mes = fechaActual.getMonth() + 1; // Los meses comienzan desde 0, por lo que se suma 1
-    var anio = fechaActual.getFullYear();
+    const ventasPrimerTurno = [];
+    const ventasSegundoTurno = [];
+
+    const data = moment().utc(true).toDate();
     // Formatear la fecha en el formato deseado
-    var fecha = dia + "/" + mes + "/" + anio;
-    const ventas = await Venta.find({ vendedor: req.params.vendedor });
+    var fecha = data.toLocaleDateString();
+    const fechaActual = moment(data).format("DD/M/YYYY");
+    const ventas = await Venta.find({
+      vendedor: req.params.vendedor,
+      fecha: fechaActual,
+    });
     const ventasMismoDia = [];
     let ventaFecha = "";
 
     for (let i = 0; i < ventas.length; i++) {
       ventaFecha = ventas[i].fecha;
       if (ventaFecha === fecha) {
+        const horaVenta = moment(ventas[i].hora, "HH:mm:ss").format("HH");
+        if (horaVenta >= 5 && horaVenta < 14) {
+          ventasPrimerTurno.push(ventas[i]);
+        } else if (horaVenta >= 14 && horaVenta <= 23) {
+          ventasSegundoTurno.push(ventas[i]);
+        }
         ventasMismoDia.push(ventas[i]);
       }
     }
     // Ordenar por hora de menor a mayor
-    ventasMismoDia.sort((a, b) => {
+    ventasPrimerTurno.sort((a, b) => {
       const horaA = a.hora.split(":");
       const horaB = b.hora.split(":");
       const minutosA = parseInt(horaA[0]) * 60 + parseInt(horaA[1]);
       const minutosB = parseInt(horaB[0]) * 60 + parseInt(horaB[1]);
       return minutosB - minutosA;
     });
-
-    res.json(ventasMismoDia);
+    ventasSegundoTurno.sort((a, b) => {
+      const horaA = a.hora.split(":");
+      const horaB = b.hora.split(":");
+      const minutosA = parseInt(horaA[0]) * 60 + parseInt(horaA[1]);
+      const minutosB = parseInt(horaB[0]) * 60 + parseInt(horaB[1]);
+      return minutosB - minutosA;
+    });
+    res.json({ ventasSegundoTurno, ventasPrimerTurno });
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -49,12 +65,9 @@ const obtenerVenta = async (req, res) => {
 };
 const corteVentasGeneral = async (req, res) => {
   try {
-    var fechaActual = new Date();
-    var dia = fechaActual.getDate()-1;
-    var mes = fechaActual.getMonth() + 1; // Los meses comienzan desde 0, por lo que se suma 1
-    var anio = fechaActual.getFullYear();
+    const data = moment().utc(true).toDate();
     // Formatear la fecha en el formato deseado
-    var fecha = dia + "/" + mes + "/" + anio;
+    var fecha = data.toLocaleDateString();
     const ventas = await Venta.find();
     const ventasMismoDia = [];
     let ventaFecha = "";
@@ -84,43 +97,66 @@ const corteVentasGeneral = async (req, res) => {
 };
 const corteVentas = async (req, res) => {
   try {
-    var fechaActual = new Date();
-    var dia = fechaActual.getDate();
-    var mes = fechaActual.getMonth() + 1; // Los meses comienzan desde 0, por lo que se suma 1
-    var anio = fechaActual.getFullYear();
+    const ventasPrimerTurno = [];
+    const ventasSegundoTurno = [];
+    const resultadoFinalTurno1 = [];
+    const resultadoFinalTurno2 = [];
+
+    const data = moment().utc(true).toDate();
     // Formatear la fecha en el formato deseado
-    var fecha = dia + "/" + mes + "/" + anio;
-    // Obtener solo la fecha en formato legible
-    const ventas = await Venta.find({ vendedor: req.params.vendedor });
-    // Filtrar ventas del mismo día
-    const ventasMismoDia = [];
+    var fecha = data.toLocaleDateString();
+    const fechaActual = moment(data).format("DD/M/YYYY");
+    const ventas = await Venta.find({
+      vendedor: req.params.vendedor,
+      fecha: fechaActual,
+    });
     let ventaFecha = "";
     for (let i = 0; i < ventas.length; i++) {
       ventaFecha = ventas[i].fecha;
       if (ventaFecha === fecha) {
-        ventasMismoDia.push(ventas[i]);
-      }
-    }
-    // Sumar número de boletos por ruta
-    const ventasPorRuta = {};
-    for (let i = 0; i < ventasMismoDia.length; i++) {
-      const venta = ventasMismoDia[i];
-      if (venta.nombre_ruta in ventasPorRuta) {
-        ventasPorRuta[venta.nombre_ruta] += parseInt(venta.num_boletos);
-      } else {
-        ventasPorRuta[venta.nombre_ruta] = parseInt(venta.num_boletos);
+        const horaVenta = moment(ventas[i].hora, "HH:mm:ss").format("HH");
+        if (horaVenta >= 5 && horaVenta < 14) {
+          ventasPrimerTurno.push(ventas[i]);
+        } else if (horaVenta >= 14 && horaVenta <= 23) {
+          ventasSegundoTurno.push(ventas[i]);
+        }
       }
     }
 
+    // Sumar número de boletos por ruta
+    const ventasPorRutaTurno1 = {};
+    for (let i = 0; i < ventasPrimerTurno.length; i++) {
+      const venta = ventasPrimerTurno[i];
+      if (venta.nombre_ruta in ventasPorRutaTurno1) {
+        ventasPorRutaTurno1[venta.nombre_ruta] += parseInt(venta.num_boletos);
+      } else {
+        ventasPorRutaTurno1[venta.nombre_ruta] = parseInt(venta.num_boletos);
+      }
+    }
+    // Sumar número de boletos por ruta
+    const ventasPorRutaTurno2 = {};
+    for (let i = 0; i < ventasSegundoTurno.length; i++) {
+      const venta = ventasSegundoTurno[i];
+      if (venta.nombre_ruta in ventasPorRutaTurno2) {
+        ventasPorRutaTurno2[venta.nombre_ruta] += parseInt(venta.num_boletos);
+      } else {
+        ventasPorRutaTurno2[venta.nombre_ruta] = parseInt(venta.num_boletos);
+      }
+    }
     // Convertir a formato deseado
-    const resultadoFinal = [];
-    for (const nombre_ruta in ventasPorRuta) {
-      resultadoFinal.push({
+    for (const nombre_ruta in ventasPorRutaTurno1) {
+      resultadoFinalTurno1.push({
         nombre_ruta,
-        total_boletos: ventasPorRuta[nombre_ruta],
+        total_boletos: ventasPorRutaTurno1[nombre_ruta],
       });
     }
-    res.json(resultadoFinal);
+    for (const nombre_ruta in ventasPorRutaTurno2) {
+      resultadoFinalTurno2.push({
+        nombre_ruta,
+        total_boletos: ventasPorRutaTurno2[nombre_ruta],
+      });
+    }
+    res.json({ resultadoFinalTurno1, resultadoFinalTurno2 });
   } catch (error) {
     console.error(error);
     res.status(500).json({
