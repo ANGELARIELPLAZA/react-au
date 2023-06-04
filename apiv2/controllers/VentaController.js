@@ -29,7 +29,7 @@ const obtenerVenta = async (req, res) => {
 
     for (let i = 0; i < ventas.length; i++) {
       ventaFecha = ventas[i].fecha;
-      if (ventaFecha === fecha) {
+     
         const horaVenta = moment(ventas[i].hora, "HH:mm:ss").format("HH");
         if (horaVenta >= 5 && horaVenta < 14) {
           ventasPrimerTurno.push(ventas[i]);
@@ -37,7 +37,7 @@ const obtenerVenta = async (req, res) => {
           ventasSegundoTurno.push(ventas[i]);
         }
         ventasMismoDia.push(ventas[i]);
-      }
+      
     }
     // Ordenar por hora de menor a mayor
     ventasPrimerTurno.sort((a, b) => {
@@ -73,9 +73,8 @@ const corteVentasGeneral = async (req, res) => {
     let ventaFecha = "";
     for (let i = 0; i < ventas.length; i++) {
       ventaFecha = ventas[i].fecha;
-      if (ventaFecha === fecha) {
         ventasMismoDia.push(ventas[i]);
-      }
+      
     }
     // Ordenar por hora de menor a mayor
     ventasMismoDia.sort((a, b) => {
@@ -110,16 +109,15 @@ const corteVentas = async (req, res) => {
       vendedor: req.params.vendedor,
       fecha: fechaActual,
     });
+
     let ventaFecha = "";
     for (let i = 0; i < ventas.length; i++) {
       ventaFecha = ventas[i].fecha;
-      if (ventaFecha === fecha) {
-        const horaVenta = moment(ventas[i].hora, "HH:mm:ss").format("HH");
-        if (horaVenta >= 5 && horaVenta < 14) {
-          ventasPrimerTurno.push(ventas[i]);
-        } else if (horaVenta >= 14 && horaVenta <= 23) {
-          ventasSegundoTurno.push(ventas[i]);
-        }
+      const horaVenta = moment(ventas[i].hora, "HH:mm:ss").format("HH");
+      if (horaVenta >= 5 && horaVenta < 14) {
+        ventasPrimerTurno.push(ventas[i]);
+      } else if (horaVenta >= 14 && horaVenta <= 23) {
+        ventasSegundoTurno.push(ventas[i]);
       }
     }
 
