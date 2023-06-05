@@ -206,20 +206,13 @@ export default function CorteCaja() {
       const data = await response.json();
       const turnoActual = new Date().getHours(); // Obtener la hora actual del sistema
 
-      let newData,newData1,newData2;
-      if (turnoActual >= 5 && turnoActual < 14) {
-        newData = data.resultadoFinalTurno1; // Usar array del primer turno
-      } else if (turnoActual >= 14 && turnoActual <= 23) {
-        newData = data.resultadoFinalTurno2; // Usar array del segundo turno
-      }
+      let newData1,newData2;
+      
       newData1 = data.resultadoFinalTurno1; // Usar array del primer turno
       newData2 = data.resultadoFinalTurno2; // Usar array del primer turno
 
       setDataT1(newData1);
       setDataT2(newData2);
-      setData(newData);
-
-
     } catch (error) {
       console.error(error);
     }
@@ -259,7 +252,6 @@ export default function CorteCaja() {
       (num_boletos, item) => num_boletos + parseInt(item.num_boletos),
       0
     );
-
     setTotalBoletos(totalBoletos);
     setTotalGanancias(totalGanancias);
   };
