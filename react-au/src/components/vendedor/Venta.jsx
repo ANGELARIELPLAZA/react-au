@@ -202,6 +202,8 @@ export const Venta = () => {
                     name="code"
                     value={formData.code}
                     onChange={handleInputChange}
+                    pattern="^(?:[1-542]|1000)$"
+                    title="Ingrese un codigo correcto del 1 al 542 o 1000 que es parada minima" // Mensaje personalizado para la expresión regula
                     required
                   />
                 </label>
@@ -214,7 +216,10 @@ export const Venta = () => {
                     name="num_boleto"
                     value={formData.num_boleto}
                     onChange={handleInputChange}
+                    pattern="[1-3]" // Expresión regular para permitir solo números del 1 al 5
                     required
+                    title="Solo puede imprimir de 1 a 3 boletos" // Mensaje personalizado para la expresión regular
+
                   />
                 </label>
               </div>
