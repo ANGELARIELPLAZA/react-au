@@ -5,7 +5,7 @@ export const Header = () => {
     <header className="layout__navbar">
       <div className="navbar__header">
         <p className="navbar__title">
-        Boletos_AU
+        Itsmo
         </p>
       </div>
       <Nav></Nav>

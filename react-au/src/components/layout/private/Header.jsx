@@ -7,7 +7,7 @@ export const Header = () => {
     <header className="layout__navbar">
       <div className="navbar__header">
         <NavLink to="/admin/" className="navbar__title">
-          <p className="navbar__title">Boletos_AU</p>{" "}
+          <p className="navbar__title">itsmo</p>{" "}
         </NavLink>
       </div>
       <Nav></Nav>
